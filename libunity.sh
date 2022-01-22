@@ -45,7 +45,7 @@ function UnityExecuteMethod() {
 
     printf '%48s: %s\n' 'executing method' $method
 
-    $unity_cmd -projectPath $path_prj -executeMethod $method ${@:4}
+    $unity_cmd -projectPath $path_prj -executeMethod $method ${@:3}
 
     local err=$?
     if (( 0 != $err )); then

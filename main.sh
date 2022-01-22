@@ -158,7 +158,7 @@ function dot_prj_build() {
 
 function u3d_prj_build() {
     rm -rf $unity_out_path
-    UnityExecuteMethod $u3d_prj_path/$u3d_prj_name com.wolfired.slg_dot_editor.AndroidBuilder.Build
+    UnityExecuteMethod $u3d_prj_path/$u3d_prj_name com.wolfired.slg_dot_editor.AndroidBuilder.Build $unity_out_file
 }
 
 args_print

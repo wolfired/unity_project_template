@@ -31,14 +31,14 @@ unity_exe_file=/d/Unity.2021.2.0a21/Editor/Unity.exe \
 dot_prj_name_core=slg_dot_core \
 dot_prj_name_mods=slg_dot_mod0,slg_dot_mod1 \
 dot_prj_name_editor=slg_dot_editor \
-unity_log_file=unity_log.txt \
+unity_log_file=u3d_editor.log \
 bash ./main.sh
 
 unity_exe_file=/d/Unity.2019.4.6f1/Editor/Unity.exe \
 dot_prj_name_core=slg_dot_core \
 dot_prj_name_mods=slg_dot_mod0,slg_dot_mod1 \
 dot_prj_name_editor=slg_dot_editor \
-unity_log_file=unity_log.txt \
+unity_log_file=u3d_editor.log \
 bash ./main.sh
 
 ```
