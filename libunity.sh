@@ -1,12 +1,12 @@
 function UnityCreateProject() {
-    local path_prj=${1:?"<U3D项目路径>"}
+    local path_prj=${1:?'need u3d prj path'}
 
     if [[ -d $path_prj/ProjectSettings || -d $path_prj/UserSettings || -d $path_prj/Library ]]; then
-        echo "U3D项目已存在, 无须创建: $path_prj"
-        return 1
+        printf '%48s: %s\n' 'u3d prj already exist' $path_prj
+        return
     fi
 
-    echo "正在创建U3D项目: $path_prj"
+    printf '%48s: %s\n' 'creating u3d prj' $path_prj
 
     mkdir -p $(dirname $path_prj)
     mkdir -p $path_prj/Assets/Plugins
@@ -15,46 +15,44 @@ function UnityCreateProject() {
     mkdir -p $path_prj/Assets/Editor/Scripts
 
 cat <<EOF > $path_prj/Assets/Scripts/Placeholder.cs
-// 占位文件, 让Unity自动生成工程文件
+// placeholder for Unity auto generate project file
 EOF
 
 cat <<EOF > $path_prj/Assets/Editor/Scripts/Placeholder.cs
-// 占位文件, 让Unity自动生成工程文件
+// placeholder for Unity auto generate project file
 EOF
 
-    Unity -quit -createProject $path_prj
+    $unity_cmd -createProject $path_prj
 
     local err=$?
-    if (( 0 == $err )); then
-        echo "成功创建U3D项目: $path_prj"
-    else
-        echo "创建U3D项目失败, 错误码: $err"
-        return 1
+    if (( 0 != $err )); then
+        printf '%48s: %s, error code: \n' 'create u3d prj failure' $path_prj $err
+        return $err
     fi
+    printf '%48s: %s\n' 'create u3d prj success' $path_prj
 
     return 0
 }
 
 function UnityExecuteMethod() {
-    local path_prj=${1:?"<U3D项目路径>"}
-    local method=${2:?"<执行命令>"}
-
-    mkdir -p $(dirname $file_log)
+    local path_prj=${1:?'need u3d prj path'}
+    local method=${2:?'need execute method'}
 
     if [[ ! -d $path_prj ]]; then
-        echo "U3D项目不存在, 无法执行命令: $path_prj -> $method"
-        return
+        printf '%48s: %s, method: \n' 'nothing to execute, u3d prj path not exist' $path_prj $method
+        return 1
     fi
 
-    echo "正在执行命令: $method"
+    printf '%48s: %s\n' 'executing method' $method
 
-    # -quit
-    Unity -projectPath $path_prj -executeMethod $method ${@:4}
+    $unity_cmd -projectPath $path_prj -executeMethod $method ${@:4}
 
     local err=$?
-    if (( 0 == $err )); then
-        echo "成功执行命令: $method"
-    else
-        echo "执行命令失败, 错误码: $err"
+    if (( 0 != $err )); then
+        printf '%48s: %s, error code: %s\n' 'execute method failure' $method $err
+        return $err
     fi
+    printf '%48s: %s\n' 'execute method success' $method
+
+    return 0
 }

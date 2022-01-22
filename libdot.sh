@@ -1,67 +1,72 @@
 function DotSolutionNew() {
-    local path_sln=${1:?"<Dotnet解决方案路径>"}
-    local name_sln=${2:?"<Dotnet解决方案名称>"}
+    local path_sln=${1:?'need dotnet sln path'}
+    local name_sln=${2:?'need dotnet sln name'}
 
     if [[ -f $path_sln/$name_sln.sln ]]; then
-        echo "Dotnet解决方案已存在无须创建: $path_prj"
+        printf '%48s: %s\n' 'dotnet sln already exist' $path_sln/$name_sln.sln
         return
     fi
 
     mkdir -p $(dirname $path_sln)
 
-    echo "正在创建解决方案: $path_sln"
+    printf '%48s: %s\n' 'creating dotnet sln' $path_sln/$name_sln.sln
     dotnet new sln -o $path_sln -n $name_sln
-    echo "成功创建解决方案: $path_sln"
+    printf '%48s: %s\n' 'created dotnet sln' $path_sln/$name_sln.sln
+
+    return 0
 }
 
 function DotSolutionDelete() {
-    local path_sln=${1:?"<Dotnet解决方案路径>"}
-    local path_sln_built=${2:-} # [解决方案输出路径]
+    local path_sln=${1:?'need dotnet sln path'}
+    local name_sln=${2:?'need dotnet sln name'}
+    local path_sln_out_path=${3:-} # dotnet sln out path
 
     if [[ -d $path_sln ]]; then
-        echo "正在删除解决方案: $path_sln"
+        printf '%48s: %s\n' 'deleting dotnet sln' $path_sln/$name_sln.sln
         rm -rf $path_sln/*.sln
-        echo "成功删除解决方案: $path_sln"
+        printf '%48s: %s\n' 'deleted dotnet sln' $path_sln/$name_sln.sln
     else
-        echo "解决方案路径不存在, 无须删除: $path_sln"
+        printf '%48s: %s\n' 'nothing to delete, dotnet sln not exist' $path_sln/$name_sln.sln
     fi
 
-    if [[ -d $path_sln_built ]]; then
-        echo "正在删除解决方案输出路径: $path_sln_built"
-        rm -rf $path_sln_built
-        echo "成功删除解决方案输出路径: $path_sln_built"
+    if [[ -d $path_sln_out_path ]]; then
+        printf '%48s: %s\n' 'deleting dotnet sln out path' $path_sln_out_path
+        rm -rf $path_sln_out_path
+        printf '%48s: %s\n' 'deleted dotnet sln out path' $path_sln_out_path
     else
-        echo "解决方案输出路径不存在, 无须删除: $path_sln_built"
+        printf '%48s: %s\n' 'nothing to delete, dotnet sln out path not exist' $path_sln_out_path
     fi
 }
 
 function DotSolutionClean() {
-    local path_sln=${1:?"<Dotnet解决方案路径>"}
-    local path_sln_built=${2:-} # [解决方案输出路径]
+    local path_sln=${1:?'need dotnet sln path'}
+    local name_sln=${2:?'need dotnet sln name'}
+    local path_sln_out_path=${3:-} # dotnet sln out path
 
-    if [[ -d $path_sln && -d $path_sln_built ]]; then
-        echo "正在清理解决方案: $path_sln"
-        dotnet clean -o $path_sln_built $path_sln
-        echo "成功清理解决方案: $path_sln"
+    if [[ -d $path_sln && -d $path_sln_out_path ]]; then
+        printf '%48s: %s\n' 'cleaning dotnet sln' $path_sln_out_path
+        dotnet clean -o $path_sln_out_path $path_sln
+        printf '%48s: %s\n' 'cleaned dotnet sln' $path_sln_out_path
     elif [[ -d $path_sln ]]; then
-        echo "正在清理解决方案: $path_sln"
+        printf '%48s: %s\n' 'cleaning dotnet sln' $path_sln/$name_sln.sln
         dotnet clean $path_sln
-        echo "成功清理解决方案: $path_sln"
+        printf '%48s: %s\n' 'cleaned dotnet sln' $path_sln/$name_sln.sln
     else
-        echo "解决方案路径不存在, 无须清理: $path_sln"
+        printf '%48s: %s\n' 'nothing to clean, dotnet sln not exist' $path_sln/$name_sln.sln
     fi
 }
 
 function DotProjectNew() {
-    local path_sln=${1:?"<Dotnet解决方案路径>"}
-    local type_prj=${2:?"<Dotnet项目类型, classlib|console>"}
-    local framework_prj=${3:?"<Dotnet项目框架, netstandard2.0|net5.0>"}
-    local path_prj=${4:?"<Dotnet项目路径>"}
+    local path_sln=${1:?'need dotnet sln path'}
+    local name_sln=${2:?'need dotnet sln name'}
+    local type_prj=${3:?'need dotnet prj type, classlib | console'}
+    local framework_prj=${4:?'need dotnet framework, netstandard2.0 | net5.0'}
+    local path_prj=${5:?'need dotnet prj path'}
 
     local name_prj=$(basename $path_prj)
 
     if [[ -f $path_prj/$name_prj.csproj ]]; then
-        echo "Dotnet项目已存在无须创建: $path_prj"
+        printf '%48s: %s\n' 'dotnet prj already exist' $path_prj
         return 1
     fi
 
@@ -81,7 +86,7 @@ namespace com.wolfired.$name_prj {
     public class Lib { }
 }
 EOF
-    elif [[ "console" == $type_prj && ! -f $path_prj/src/Main.cs ]]; then
+    elif [[ 'console' == $type_prj && ! -f $path_prj/src/Main.cs ]]; then
 cat <<EOF > $path_prj/src/Main.cs
 using System;
 
@@ -98,14 +103,14 @@ namespace com.wolfired.$name_prj
 EOF
     fi
 
-    dotnet sln $path_sln add $path_prj
+    dotnet sln $path_sln/$name_sln.sln add $path_prj
 
     return 0
 }
 
 function DotProjectAddPackages() {
-    local path_prj=${1:?"<Dotnet项目路径>"}
-    local name_packages=${2:?"依赖包名, 逗号分隔"}
+    local path_prj=${1:?'need dotnet prj path'}
+    local name_packages=${2:?"need package name list"} # pack_name0,pack_name1,pacak_name2
 
     readarray -td, arr_name_package <<<"$name_packages,"
     unset 'arr_name_package[-1]'
@@ -116,8 +121,8 @@ function DotProjectAddPackages() {
 }
 
 function DotProjectAddReference() {
-    local path_prj=${1:?"<Dotnet项目路径>"}
-    local path_prj_depeds=${2:?"<Dotnet项目路径, 逗号分隔>"}
+    local path_prj=${1:?'need dotnet prj path'}
+    local path_prj_depeds=${2:?"need dotnet prj path list"} # prj_path0,prj_path1,prj_path2
 
     readarray -td, arr_path_prj_deped <<<"$path_prj_depeds,"
     unset 'arr_path_prj_deped[-1]'
@@ -128,63 +133,65 @@ function DotProjectAddReference() {
 }
 
 function DotProjectDelete() {
-    local path_prj=${1:?"<Dotnet项目路径>"}
+    local path_prj=${1:?'need dotnet prj path'}
 
     if [[ ! -d $path_prj ]]; then
-        echo "Dotnet项目路径不存在无须删除: $path_prj"
+        printf '%48s: %s\n' 'nothing to delete, dotnet prj not exist' $path_prj
         return
     fi
 
-    echo "正在删除Dotnet项目: $path_prj"
+    printf '%48s: %s\n' 'deleting dotnet prj' $path_prj
     rm -rf $path_prj/bin $path_prj/obj $path_prj/*.csproj
-    echo "成功删除Dotnet项目: $path_prj"
+    printf '%48s: %s\n' 'deleted dotnet prj' $path_prj
 }
 
 function DotProjectClean() {
-    local path_prj=${1:?"<Dotnet项目路径>"}
+    local path_prj=${1:?'need dotnet prj path'}
 
-    if [[ -d $path_prj ]]; then
-        echo "正在清理Dotnet项目: $path_prj"
-        dotnet clean $path_prj
-        echo "成功清理Dotnet项目: $path_prj"
-    else
-        echo "Dotnet项目路径不存在, 无须清理: $path_prj"
+    if [[ ! -d $path_prj ]]; then
+        printf '%48s: %s\n' 'nothing to clean, dotnet prj not exist' $path_prj
+        return
     fi
+
+    printf '%48s: %s\n' 'cleaning dotnet prj' $path_prj
+    dotnet clean $path_prj
+    printf '%48s: %s\n' 'cleaned dotnet prj' $path_prj
 }
 
 function DotBuild() {
-    local path_sln=${1:?"<解决方案路径|Dotnet项目路径>"}
-    local path_out=${2:-} # [解决方案输出路径]
+    local path_sln=${1:?'need dotnet sln path'}
+    local name_sln=${2:?'need dotnet sln name'}
+    local path_sln_out_path=${3:-} # dotnet sln out path
 
-    if [[ -n $path_out && ! -d $path_out ]]; then
-        mkdir -p $path_out
+    if [[ -n $path_sln_out_path && ! -d $path_sln_out_path ]]; then
+        mkdir -p $path_sln_out_path
     fi
 
-    if [[ -d $path_sln && -d $path_out ]]; then
-        echo "正在构建: $path_sln"
-        dotnet build -o $path_out $path_sln
-        echo "成功构建: $path_sln"
+    if [[ -d $path_sln && -d $path_sln_out_path ]]; then
+        printf '%48s: %s\n' 'building dotnet sln' $path_sln/$name_sln.sln
+        dotnet build -o $path_sln_out_path $path_sln/$name_sln.sln
+        printf '%48s: %s\n' 'built dotnet sln' $path_sln/$name_sln.sln
     elif [[ -d $path_sln ]]; then
-        echo "正在构建: $path_sln"
-        dotnet build $path_sln
-        echo "成功构建: $path_sln"
+        printf '%48s: %s\n' 'building dotnet sln' $path_sln/$name_sln.sln
+        dotnet build $path_sln/$name_sln.sln
+        printf '%48s: %s\n' 'built dotnet sln' $path_sln/$name_sln.sln
     else
-        echo "路径不存在, 无须构建: $path_sln"
+        printf '%48s: %s\n' 'nothing to build, dotnet sln not exist' $path_sln/$name_sln.sln
     fi
 }
 
 function DotDLLsSrc2Dst() {
-    local path_src=${1:?"<DLLs来源路径>"}
-    local path_dst=${2:?"<DLLs目标路径>"}
-    local name_dlls=${3:?"<DLL文件名列表, 不包括后缀, 逗号分隔>"}
-    local need_pdb=${4:?"<是否需要复制PDB文件, true|false>"}
+    local path_src=${1:?'need dlls src path'}
+    local path_dst=${2:?'need dlls dst path'}
+    local name_dlls=${3:?'need dll list'} # mod0,mod1,mod2
+    local need_copy_pdb=${4:?'need copy pdb file, true | false'}
 
     readarray -td, arr_name_dll <<<"$name_dlls,"
     unset 'arr_name_dll[-1]'
 
     for name_dll in "${arr_name_dll[@]}"; do
         cp -v -u $path_src/$name_dll.dll $path_dst/
-        if [[ "true" == $need_pdb ]]; then
+        if [[ 'true' == $need_copy_pdb ]]; then
             cp -v -u $path_src/$name_dll.pdb $path_dst/
         fi
     done
