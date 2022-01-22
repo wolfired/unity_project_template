@@ -13,7 +13,7 @@ function DotSolutionNew() {
     dotnet new sln -o $path_sln -n $name_sln
     printf '%48s: %s\n' 'created dotnet sln' $path_sln/$name_sln.sln
 
-    return 0
+    return
 }
 
 function DotSolutionDelete() {
