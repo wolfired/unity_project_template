@@ -185,6 +185,7 @@ function dot_prj_build() {
     DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_core true
     DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_mods true
     DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_editor true
+
     DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage0 true
     DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage1 true
 
@@ -210,6 +211,10 @@ cp -v -u $dlls4editor/* $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/
 UnityExecuteMethod \
 $u3d_prj_path/$u3d_prj_name \
 com.wolfired.dot_prj_stage0.UnityPackageHelper.Install --upm_i_args_package_id com.unity.ide.vscode
+
+UnityExecuteMethod \
+$u3d_prj_path/$u3d_prj_name \
+com.wolfired.dot_prj_stage1.CodeEditorHelper.GenU3DProjectFiles
 
 DotSolutionNew $dot_sln_path $dot_sln_name
 
