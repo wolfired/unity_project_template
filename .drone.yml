@@ -2,16 +2,11 @@ kind: pipeline
 type: docker
 name: default
 
+clone:
+  depth: 1
+
 steps:
-- name: test
-  image: unityci/editor:ubuntu-2021.2.7f1-windows-mono-0.15.0
-  # mem_limit: 8589934592
+- name: build
+  image: unityci/editor:ubuntu-2019.4.6f1-android-0.15.0
   commands:
-  # - apt-get install net-tools
-  # - ifconfig
-  # - curl --socks5-hostname clash.wolfired.com:1080 https://www.google.com.hk
-  # - export http_proxy=http://192.168.1.7:1080
-  # - export https_proxy=http://192.168.1.7:1080
-  # - unity-editor -logFile - -quit -batchmode -manualLicenseFile /drone/src/Unity_v2021.x.ulf | true
-  # - unity-editor -logFile - -quit -batchmode -projectPath /drone/src -buildTarget Win -executeMethod Main.Test
-  - bash /drone/src/main.sh
+  - unity_exe_file=/usr/bin/unity-editor unity_log_file=u3d_editor.log dot_prj_name_core=slg_dot_core dot_prj_name_mods=slg_dot_mod0,slg_dot_mod1 dot_prj_name_editor=slg_dot_editor bash /drone/src/main.sh

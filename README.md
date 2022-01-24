@@ -3,6 +3,8 @@ unity_project_template
 
 这是一个Unity项目模板
 
+# dot_prj_booter
+
 # 用法
 
 * 编辑`main.sh`
@@ -28,17 +30,17 @@ dot_prj_names=
 dot_prj_name_editor=
 
 unity_exe_file=/d/Unity.2021.2.0a21/Editor/Unity.exe \
-dot_prj_name_core=slg_dot_core \
-dot_prj_name_mods=slg_dot_mod0,slg_dot_mod1 \
-dot_prj_name_editor=slg_dot_editor \
-unity_log_file=u3d_editor.log \
+dot_prj_name_core=dot_prj_core \
+dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
+dot_prj_name_editor=dot_prj_editor \
+unity_log_file=u3d_editor_`date +%s`.log \
 bash ./main.sh
 
 unity_exe_file=/d/Unity.2019.4.6f1/Editor/Unity.exe \
-dot_prj_name_core=slg_dot_core \
-dot_prj_name_mods=slg_dot_mod0,slg_dot_mod1 \
-dot_prj_name_editor=slg_dot_editor \
-unity_log_file=u3d_editor.log \
+dot_prj_name_core=dot_prj_core \
+dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
+dot_prj_name_editor=dot_prj_editor \
+unity_log_file=u3d_editor_`date +%s`.log \
 bash ./main.sh
 
 ```

@@ -12,8 +12,6 @@ function DotSolutionNew() {
     printf '%48s: %s\n' 'creating dotnet sln' $path_sln/$name_sln.sln
     dotnet new sln -o $path_sln -n $name_sln
     printf '%48s: %s\n' 'created dotnet sln' $path_sln/$name_sln.sln
-
-    return
 }
 
 function DotSolutionDelete() {
@@ -114,7 +112,6 @@ function DotProjectAddPackages() {
 
     readarray -td, arr_name_package <<<"$name_packages,"
     unset 'arr_name_package[-1]'
-
     for name_package in "${arr_name_package[@]}"; do
         dotnet add $path_prj package $name_package
     done
@@ -126,7 +123,6 @@ function DotProjectAddReference() {
 
     readarray -td, arr_path_prj_deped <<<"$path_prj_depeds,"
     unset 'arr_path_prj_deped[-1]'
-
     for path_prj_deped in "${arr_path_prj_deped[@]}"; do
         dotnet add $path_prj reference $path_prj_deped
     done
@@ -188,7 +184,6 @@ function DotDLLsSrc2Dst() {
 
     readarray -td, arr_name_dll <<<"$name_dlls,"
     unset 'arr_name_dll[-1]'
-
     for name_dll in "${arr_name_dll[@]}"; do
         cp -v -u $path_src/$name_dll.dll $path_dst/
         if [[ 'true' == $need_copy_pdb ]]; then

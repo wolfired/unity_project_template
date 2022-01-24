@@ -22,16 +22,15 @@ cat <<EOF > $path_prj/Assets/Editor/Scripts/Placeholder.cs
 // placeholder for Unity auto generate project file
 EOF
 
-    $unity_cmd -createProject $path_prj
+    $unity_cmd -quit -createProject $path_prj
 
     local err=$?
     if (( 0 != $err )); then
         printf '%48s: %s, error code: \n' 'create u3d prj failure' $path_prj $err
-        return $err
+        return
     fi
-    printf '%48s: %s\n' 'create u3d prj success' $path_prj
 
-    return 0
+    printf '%48s: %s\n' 'create u3d prj success' $path_prj
 }
 
 function UnityExecuteMethod() {
@@ -40,7 +39,7 @@ function UnityExecuteMethod() {
 
     if [[ ! -d $path_prj ]]; then
         printf '%48s: %s, method: \n' 'nothing to execute, u3d prj path not exist' $path_prj $method
-        return 1
+        return
     fi
 
     printf '%48s: %s\n' 'executing method' $method
@@ -50,9 +49,8 @@ function UnityExecuteMethod() {
     local err=$?
     if (( 0 != $err )); then
         printf '%48s: %s, error code: %s\n' 'execute method failure' $method $err
-        return $err
+        return
     fi
-    printf '%48s: %s\n' 'execute method success' $method
 
-    return 0
+    printf '%48s: %s\n' 'execute method success' $method
 }

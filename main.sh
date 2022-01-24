@@ -7,25 +7,29 @@ source $root_path/libunity.sh
 
 unity_exe_file=${unity_exe_file:-'/d/Unity.2021.2.0a21/Editor/Unity.exe'}
 unity_log_file=${unity_log_file:-'-'}
-unity_out_file=${unity_out_file:-"$root_path/u3d_out/main.apk"}
+unity_out_file=${unity_out_file:-"$root_path/out_u3d/main.apk"}
 unity_out_path=$(dirname $unity_out_file)
 
-dotnet_out_path=${dotnet_out_path:-"$root_path/dot_out"}
+dotnet_out_path=${dotnet_out_path:-"$root_path/out_dot"}
+
+dlls4editor=${dlls4editor:-"$root_path/dlls4editor"}
 
 u3d_prj_path=${u3d_prj_path:-"$root_path"}
-u3d_prj_name=${u3d_prj_name:-'slg_u3d'}
+u3d_prj_name=${u3d_prj_name:-'u3d_prj'}
 
 dot_sln_path=${dot_sln_path:-"$root_path"}
-dot_sln_name=${dot_sln_name:-'slg_dot'}
+dot_sln_name=${dot_sln_name:-'dot_prj'}
 
 dot_prj_path=$dot_sln_path
-
 dot_prj_name_core=${dot_prj_name_core:?'need core module name'}
 dot_prj_name_mods=${dot_prj_name_mods:?'need function module name'} # mod_name0,mod_name1,mod_name2
 dot_prj_name_editor=${dot_prj_name_editor:?'need editor module name'}
 
-# -noUpm
-unity_cmd="$unity_exe_file -quit -logFile $unity_log_file -batchmode -nographics"
+dot_prj_name_stage0=${dot_prj_name_stage0:-'dot_prj_stage0'}
+dot_prj_name_stage1=${dot_prj_name_stage1:-'dot_prj_stage1'}
+
+# -noUpm -quit
+unity_cmd="$unity_exe_file -logFile $unity_log_file -batchmode -nographics"
 
 function args_print() {
     printf '%48s: %s\n' 'Project Root Path' $root_path
@@ -83,7 +87,7 @@ function env_prepare() {
 }
 
 function activate_unity() {
-    local unity_version=${1:-$(unity -version)}
+    local unity_version=${1:-$(unity -version)} # 2019.4.6f1.0000
     local web_share_url=${2:-'https://help.wolfired.com/share'}
 
     local unity_alf_file=Unity_v`echo $unity_version | grep -oP '\d+\.\d+\.[0-9a-z]+(?=\.\d+)'`.alf
@@ -95,18 +99,20 @@ function activate_unity() {
 
     curl --fail -s $web_share_url/$unity_ulf_file -o $unity_ulf_file
     if (( 0 != $? )); then
-        $unity_cmd -createManualActivationFile
+        $unity_cmd -quit -createManualActivationFile
         scp_upload $unity_alf_file
         exit 1
     fi
 
-    $unity_cmd -manualLicenseFile $unity_ulf_file
+    $unity_cmd -quit -manualLicenseFile $unity_ulf_file
 }
 
 function dot_prj_create() {
-    local dot_prj_name_core=${dot_prj_name_core:?'need core module name'}
-    local dot_prj_name_mods=${dot_prj_name_mods:?'need function module name'} # mod_name0,mod_name1,mod_name2
-    local dot_prj_name_editor=${dot_prj_name_editor:?'need editor module name'}
+    local dot_prj_name_core=${1:?'need core module name'}
+    local dot_prj_name_mods=${2:?'need function module name'} # mod_name0,mod_name1,mod_name2
+    local dot_prj_name_editor=${3:?'need editor module name'}
+    local dot_prj_name_stage0=${4:?'need stage0 module name'}
+    local dot_prj_name_stage1=${5:?'need stage1 module name'}
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_core
     if [[ 0 -eq $? ]]; then
@@ -130,6 +136,28 @@ function dot_prj_create() {
         fi
     done
 
+    DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_stage0
+    if [[ 0 -eq $? ]]; then
+        DotProjectAddPackages $dot_prj_path/$dot_prj_name_stage0 Mono.Options
+
+        u3dot_converter \
+        --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp-Editor.csproj \
+        --nssrc 'http://schemas.microsoft.com/developer/msbuild/2003' \
+        --cfdst $dot_prj_path/$dot_prj_name_stage0/$dot_prj_name_stage0.csproj \
+        --skips 'Assembly-CSharp.csproj'
+    fi
+
+    DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_stage1
+    if [[ 0 -eq $? ]]; then
+        DotProjectAddPackages $dot_prj_path/$dot_prj_name_stage1 Mono.Options
+
+        u3dot_converter \
+        --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp-Editor.csproj \
+        --nssrc 'http://schemas.microsoft.com/developer/msbuild/2003' \
+        --cfdst $dot_prj_path/$dot_prj_name_stage1/$dot_prj_name_stage1.csproj \
+        --skips 'Assembly-CSharp.csproj'
+    fi
+
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_editor
     if [[ 0 -eq $? ]]; then
         DotProjectAddPackages $dot_prj_path/$dot_prj_name_editor Mono.Options
@@ -140,6 +168,9 @@ function dot_prj_create() {
         for dot_prj_name in "${arr_dot_prj_name_mod[@]}"; do
             DotProjectAddReference $dot_prj_path/$dot_prj_name_editor $dot_prj_path/$dot_prj_name
         done
+
+        DotProjectAddReference $dot_prj_path/$dot_prj_name_editor $dot_prj_path/$dot_prj_name_stage0
+        DotProjectAddReference $dot_prj_path/$dot_prj_name_editor $dot_prj_path/$dot_prj_name_stage1
 
         u3dot_converter \
         --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp-Editor.csproj \
@@ -154,11 +185,16 @@ function dot_prj_build() {
     DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_core true
     DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_mods true
     DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_editor true
+    DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage0 true
+    DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage1 true
+
+    DotDLLsSrc2Dst $dotnet_out_path $dlls4editor $dot_prj_name_stage0 true
+    DotDLLsSrc2Dst $dotnet_out_path $dlls4editor $dot_prj_name_stage1 true
 }
 
 function u3d_prj_build() {
     rm -rf $unity_out_path
-    UnityExecuteMethod $u3d_prj_path/$u3d_prj_name com.wolfired.slg_dot_editor.AndroidBuilder.Build $unity_out_file
+    UnityExecuteMethod $u3d_prj_path/$u3d_prj_name com.wolfired.dot_prj_editor.AndroidBuilder.Build $unity_out_file
 }
 
 args_print
@@ -169,10 +205,20 @@ args_print
 
 UnityCreateProject $u3d_prj_path/$u3d_prj_name
 
+cp -v -u $dlls4editor/* $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/
+
+UnityExecuteMethod \
+$u3d_prj_path/$u3d_prj_name \
+com.wolfired.dot_prj_stage0.UnityPackageHelper.Install --upm_i_args_package_id com.unity.ide.vscode
+
 DotSolutionNew $dot_sln_path $dot_sln_name
 
-dot_prj_create $dot_prj_name_core $dot_prj_name_mods $dot_prj_name_editor
+dot_prj_create $dot_prj_name_core $dot_prj_name_mods $dot_prj_name_editor $dot_prj_name_stage0 $dot_prj_name_stage1
 
 dot_prj_build
 
-u3d_prj_build
+# UnityExecuteMethod \
+# $u3d_prj_path/$u3d_prj_name \
+# com.wolfired.dot_prj_stage0.UnityPackageHelper.ListInstalled
+
+# u3d_prj_build
