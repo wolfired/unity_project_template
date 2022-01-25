@@ -66,24 +66,30 @@ function scp_upload() {
 }
 
 function env_prepare() {
+    export http_proxy=http://192.168.1.7:1080
+    export https_proxy=http://192.168.1.7:1080
+
     sed -i "s@http://.*archive.ubuntu.com@http://repo.huaweicloud.com@g" /etc/apt/sources.list
     sed -i "s@http://.*security.ubuntu.com@http://repo.huaweicloud.com@g" /etc/apt/sources.list
     apt-get update
-    apt-get -y install language-pack-en
+    apt-get -y install language-pack-en software-properties-common apt-transport-https
 
-    export http_proxy=http://192.168.1.7:1080
-    export https_proxy=http://192.168.1.7:1080
+    wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
+    add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+    apt install -y code
+
     wget https://dot.net/v1/dotnet-install.sh \
     && bash ./dotnet-install.sh --channel 5.0 \
     && export DOTNET_ROOT=/root/.dotnet \
     && export PATH=$PATH:$DOTNET_ROOT:$DOTNET_ROOT/tools \
     && rm -rf ./dotnet-install.sh
-    export -n http_proxy
-    export -n https_proxy
 
     if [[ 0 -eq $(dotnet tool list -g | grep -oP 'wolfired.u3dot_converter' | wc -l) ]]; then
         dotnet tool install -g wolfired.u3dot_converter
     fi
+
+    export -n http_proxy
+    export -n https_proxy
 }
 
 function activate_unity() {
@@ -186,11 +192,11 @@ function dot_prj_build() {
     DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_mods true
     DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_editor true
 
-    DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage0 true
-    DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage1 true
-
     DotDLLsSrc2Dst $dotnet_out_path $dlls4editor $dot_prj_name_stage0 true
     DotDLLsSrc2Dst $dotnet_out_path $dlls4editor $dot_prj_name_stage1 true
+
+    DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage0 true
+    DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage1 true
 }
 
 function u3d_prj_build() {
@@ -208,9 +214,9 @@ UnityCreateProject $u3d_prj_path/$u3d_prj_name
 
 cp -v -u $dlls4editor/* $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/
 
-UnityExecuteMethod \
-$u3d_prj_path/$u3d_prj_name \
-com.wolfired.dot_prj_stage0.UnityPackageHelper.Install --upm_i_args_package_id com.unity.ide.vscode
+# UnityExecuteMethod \
+# $u3d_prj_path/$u3d_prj_name \
+# com.wolfired.dot_prj_stage0.UnityPackageHelper.Install --upm_i_args_package_id com.unity.ide.vscode
 
 UnityExecuteMethod \
 $u3d_prj_path/$u3d_prj_name \
@@ -222,8 +228,8 @@ dot_prj_create $dot_prj_name_core $dot_prj_name_mods $dot_prj_name_editor $dot_p
 
 dot_prj_build
 
-# UnityExecuteMethod \
-# $u3d_prj_path/$u3d_prj_name \
-# com.wolfired.dot_prj_stage0.UnityPackageHelper.ListInstalled
+UnityExecuteMethod \
+$u3d_prj_path/$u3d_prj_name \
+com.wolfired.dot_prj_stage1.UnityEditorHelper.CreateDefaultScene
 
 # u3d_prj_build
