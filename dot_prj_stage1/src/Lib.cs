@@ -26,43 +26,108 @@ namespace com.wolfired.dot_prj_stage1
     {
         public static void SetupAndroidSDKNDK()
         {
-            var str_ndk = EditorPrefs.GetString("AndroidNdkRoot");
-            if (null == str_ndk || "" == str_ndk || !Directory.Exists(str_ndk))
-            {
-                var env_str_ndk = Environment.GetEnvironmentVariable("ANDROID_NDK_ROOT");
-                if (null == env_str_ndk || "" == env_str_ndk || !Directory.Exists(env_str_ndk))
-                {
-                    Debug.Log("请设置有效环境变量: ANDROID_NDK_ROOT");
-                    return;
-                }
-                EditorPrefs.SetString("AndroidNdkRoot", env_str_ndk);
-            }
-            Debug.Log("AndroidNdkRoot: " + EditorPrefs.GetString("AndroidNdkRoot"));
+            var exit_code = 0;
 
-            var str_sdk = EditorPrefs.GetString("AndroidSdkRoot");
-            if (null == str_sdk || "" == str_sdk || !Directory.Exists(str_sdk))
+            var prefs_key_ndk_root = "AndroidNdkRoot";
+            var prefs_val_ndk_root = "";
+            if (EditorPrefs.HasKey(prefs_key_ndk_root))
             {
-                var env_str_sdk = Environment.GetEnvironmentVariable("ANDROID_SDK_ROOT");
-                if (null == env_str_sdk || "" == env_str_sdk || !Directory.Exists(env_str_sdk))
-                {
-                    Debug.Log("请设置有效环境变量: ANDROID_SDK_ROOT");
-                    return;
-                }
-                EditorPrefs.SetString("AndroidSdkRoot", env_str_sdk);
+                prefs_val_ndk_root = EditorPrefs.GetString(prefs_key_ndk_root);
             }
-            Debug.Log("AndroidSdkRoot: " + EditorPrefs.GetString("AndroidSdkRoot"));
+
+            if (null == prefs_val_ndk_root || "" == prefs_val_ndk_root || !Directory.Exists(prefs_val_ndk_root))
+            {
+                prefs_val_ndk_root = Environment.GetEnvironmentVariable("ANDROID_NDK_ROOT");
+                if (null == prefs_val_ndk_root || "" == prefs_val_ndk_root || !Directory.Exists(prefs_val_ndk_root))
+                {
+                    prefs_val_ndk_root = Environment.GetEnvironmentVariable("ANDROID_NDK_HOME");
+                    if (null == prefs_val_ndk_root || "" == prefs_val_ndk_root || !Directory.Exists(prefs_val_ndk_root))
+                    {
+                        Debug.Log("You Need Setup Env Var: ANDROID_NDK_ROOT");
+                        exit_code = 1;
+                    }
+                    else
+                    {
+                        EditorPrefs.SetString(prefs_key_ndk_root, prefs_val_ndk_root);
+                    }
+                }
+                else
+                {
+                    EditorPrefs.SetString(prefs_key_ndk_root, prefs_val_ndk_root);
+                }
+            }
+            Debug.Log("AndroidNdkRoot: " + prefs_val_ndk_root);
+
+            var prefs_key_sdk_root = "AndroidSdkRoot";
+            var prefs_val_sdk_root = "";
+            if (EditorPrefs.HasKey(prefs_key_sdk_root))
+            {
+                prefs_val_sdk_root = EditorPrefs.GetString(prefs_key_sdk_root);
+            }
+
+            if (null == prefs_val_sdk_root || "" == prefs_val_sdk_root || !Directory.Exists(prefs_val_sdk_root))
+            {
+                prefs_val_sdk_root = Environment.GetEnvironmentVariable("ANDROID_SDK_ROOT");
+                if (null == prefs_val_sdk_root || "" == prefs_val_sdk_root || !Directory.Exists(prefs_val_sdk_root))
+                {
+                    Debug.Log("You Need Setup Env Var: ANDROID_SDK_ROOT");
+                    exit_code = 1;
+                }
+                else
+                {
+                    EditorPrefs.SetString(prefs_key_sdk_root, prefs_val_sdk_root);
+                }
+            }
+            Debug.Log("AndroidSdkRoot: " + prefs_val_sdk_root);
 
             if (Application.isBatchMode)
             {
-                EditorApplication.Exit(0);
+                EditorApplication.Exit(exit_code);
             }
         }
 
         public static void SetupVSCode()
         {
+            var exit_code = 0;
+
+            var prefs_key_vscode_cmd = "kScriptsDefaultApp";
+            var prefs_val_vscode_cmd = "";
+            if (EditorPrefs.HasKey(prefs_key_vscode_cmd))
+            {
+                prefs_val_vscode_cmd = EditorPrefs.GetString(prefs_key_vscode_cmd);
+            }
+            if (null == prefs_val_vscode_cmd || "" == prefs_val_vscode_cmd || !File.Exists(prefs_val_vscode_cmd))
+            {
+                prefs_val_vscode_cmd = Environment.GetEnvironmentVariable("VSCODE_CMD");
+                if (null == prefs_val_vscode_cmd || "" == prefs_val_vscode_cmd || !File.Exists(prefs_val_vscode_cmd))
+                {
+                    Debug.Log("You Need Setup Env Var: VSCODE_CMD");
+                    exit_code = 1;
+                }
+                else
+                {
+                    EditorPrefs.SetString(prefs_key_vscode_cmd, prefs_val_vscode_cmd);
+                }
+            }
+            Debug.Log("VSCode CMD: " + prefs_val_vscode_cmd);
+
+
+            var prefs_key_vscode_args = "vscode_arguments";
+            var prefs_val_vscode_args = "";
+            if (EditorPrefs.HasKey(prefs_key_vscode_args))
+            {
+                prefs_val_vscode_args = EditorPrefs.GetString(prefs_key_vscode_args);
+            }
+            if (null == prefs_val_vscode_args || "" == prefs_val_vscode_args)
+            {
+                prefs_val_vscode_args = "\"$(ProjectPath)\" -g \"$(File)\":$(Line):$(Column)";
+                EditorPrefs.SetString(prefs_key_vscode_args, prefs_val_vscode_args);
+            }
+            Debug.Log("VSCode Arguments: " + prefs_val_vscode_args);
+
             if (Application.isBatchMode)
             {
-                EditorApplication.Exit(0);
+                EditorApplication.Exit(exit_code);
             }
         }
 

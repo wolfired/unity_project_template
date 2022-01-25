@@ -49,7 +49,7 @@ function UnityExecuteMethod() {
     local err=$?
     if (( 0 != $err )); then
         printf '%48s: %s, error code: %s\n' 'execute method failure' $method $err
-        return
+        exit $err
     fi
 
     printf '%48s: %s\n' 'execute method success' $method

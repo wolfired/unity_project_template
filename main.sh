@@ -28,6 +28,14 @@ dot_prj_name_editor=${dot_prj_name_editor:?'need editor module name'}
 dot_prj_name_stage0=${dot_prj_name_stage0:-'dot_prj_stage0'}
 dot_prj_name_stage1=${dot_prj_name_stage1:-'dot_prj_stage1'}
 
+step_env_prepare=${step_env_prepare:-0}
+step_activate_unity=${step_activate_unity:-0}
+step_create_unity_prj=${step_create_unity_prj:-0}
+step_install_unity_package=${step_install_unity_package:-0}
+step_create_dotnet_prj=${step_create_dotnet_prj:-0}
+step_build_dotnet_prj=${step_build_dotnet_prj:-0}
+step_build_unity_prj=${step_build_unity_prj:-0}
+
 # -noUpm -quit
 unity_cmd="$unity_exe_file -logFile $unity_log_file -batchmode -nographics"
 
@@ -206,30 +214,44 @@ function u3d_prj_build() {
 
 args_print
 
-# env_prepare
+if (( 0 != $step_env_prepare )); then
+    env_prepare
+fi
 
-# activate_unity 2019.4.6f1.0000
+if (( 0 != $step_activate_unity )); then
+    activate_unity 2019.4.6f1.0000
+fi
 
-UnityCreateProject $u3d_prj_path/$u3d_prj_name
+if (( 0 != $step_create_unity_prj )); then
+    UnityCreateProject $u3d_prj_path/$u3d_prj_name
+fi
 
-cp -v -u $dlls4editor/* $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/
+if (( 0 != $step_install_unity_package )); then
+    cp -v -u $dlls4editor/* $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/
 
-# UnityExecuteMethod \
-# $u3d_prj_path/$u3d_prj_name \
-# com.wolfired.dot_prj_stage0.UnityPackageHelper.Install --upm_i_args_package_id com.unity.ide.vscode
+    UnityExecuteMethod \
+    $u3d_prj_path/$u3d_prj_name \
+    com.wolfired.dot_prj_stage0.UnityPackageHelper.Install --upm_i_args_package_id com.unity.ide.vscode
 
-UnityExecuteMethod \
-$u3d_prj_path/$u3d_prj_name \
-com.wolfired.dot_prj_stage1.CodeEditorHelper.GenU3DProjectFiles
+    UnityExecuteMethod \
+    $u3d_prj_path/$u3d_prj_name \
+    com.wolfired.dot_prj_stage1.UnityEditorHelper.SetupVSCode
 
-DotSolutionNew $dot_sln_path $dot_sln_name
+    UnityExecuteMethod \
+    $u3d_prj_path/$u3d_prj_name \
+    com.wolfired.dot_prj_stage1.CodeEditorHelper.GenU3DProjectFiles
+fi
 
-dot_prj_create $dot_prj_name_core $dot_prj_name_mods $dot_prj_name_editor $dot_prj_name_stage0 $dot_prj_name_stage1
+if (( 0 != $step_create_dotnet_prj )); then
+    DotSolutionNew $dot_sln_path $dot_sln_name
 
-dot_prj_build
+    dot_prj_create $dot_prj_name_core $dot_prj_name_mods $dot_prj_name_editor $dot_prj_name_stage0 $dot_prj_name_stage1
+fi
 
-UnityExecuteMethod \
-$u3d_prj_path/$u3d_prj_name \
-com.wolfired.dot_prj_stage1.UnityEditorHelper.CreateDefaultScene
+if (( 0 != $step_build_dotnet_prj )); then
+    dot_prj_build
+fi
 
-# u3d_prj_build
+if (( 0 != $step_build_unity_prj )); then
+    u3d_prj_build
+fi
