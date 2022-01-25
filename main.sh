@@ -28,6 +28,7 @@ dot_prj_name_editor=${dot_prj_name_editor:?'need editor module name'}
 dot_prj_name_stage0=${dot_prj_name_stage0:-'dot_prj_stage0'}
 dot_prj_name_stage1=${dot_prj_name_stage1:-'dot_prj_stage1'}
 
+step_clean_clear=${step_clean_clear:-0}
 step_env_prepare=${step_env_prepare:-0}
 step_activate_unity=${step_activate_unity:-0}
 step_create_unity_prj=${step_create_unity_prj:-0}
@@ -213,6 +214,45 @@ function u3d_prj_build() {
 }
 
 args_print
+
+if (( 0 != $step_clean_clear )); then
+    rm -rf $unity_out_path
+    rm -rf $dotnet_out_path
+
+    rm -rf $u3d_prj_path/$u3d_prj_name/.vscode
+    rm -rf $u3d_prj_path/$u3d_prj_name/Library
+    rm -rf $u3d_prj_path/$u3d_prj_name/Temp
+    rm -rf $u3d_prj_path/$u3d_prj_name/*.csproj
+    rm -rf $u3d_prj_path/$u3d_prj_name/*.sln
+
+    rm -rf $dot_prj_path/$dot_prj_name_core/bin
+    rm -rf $dot_prj_path/$dot_prj_name_core/obj
+    rm -rf $dot_prj_path/$dot_prj_name_core/*.csproj
+
+    readarray -td, arr_dot_prj_name_mod <<<"$dot_prj_name_mods,"
+    unset 'arr_dot_prj_name_mod[-1]'
+    for dot_prj_name in "${arr_dot_prj_name_mod[@]}"; do
+        rm -rf $dot_prj_path/$dot_prj_name/bin
+        rm -rf $dot_prj_path/$dot_prj_name/obj
+        rm -rf $dot_prj_path/$dot_prj_name/*.csproj
+    done
+
+    rm -rf $dot_prj_path/$dot_prj_name_editor/bin
+    rm -rf $dot_prj_path/$dot_prj_name_editor/obj
+    rm -rf $dot_prj_path/$dot_prj_name_editor/*.csproj
+
+    rm -rf $dot_prj_path/$dot_prj_name_stage0/bin
+    rm -rf $dot_prj_path/$dot_prj_name_stage0/obj
+    rm -rf $dot_prj_path/$dot_prj_name_stage0/*.csproj
+
+    rm -rf $dot_prj_path/$dot_prj_name_stage1/bin
+    rm -rf $dot_prj_path/$dot_prj_name_stage1/obj
+    rm -rf $dot_prj_path/$dot_prj_name_stage1/*.csproj
+
+    rm -rf $dot_sln_path/$dot_sln_name.sln
+
+    rm -rf *.log
+fi
 
 if (( 0 != $step_env_prepare )); then
     env_prepare

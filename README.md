@@ -29,6 +29,7 @@ dot_prj_names=
 # Dotnet项目, 依赖 dot_prj_name_core, dot_prj_names
 dot_prj_name_editor=
 
+# Windows
 unity_exe_file=/d/Unity.2021.2.0a21/Editor/Unity.exe \
 dot_prj_name_core=dot_prj_core \
 dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
@@ -43,6 +44,7 @@ step_build_dotnet_prj=1 \
 step_build_unity_prj=0 \
 bash ./main.sh
 
+# Windows
 unity_exe_file=/d/Unity.2019.4.6f1/Editor/Unity.exe \
 dot_prj_name_core=dot_prj_core \
 dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
@@ -57,6 +59,7 @@ step_build_dotnet_prj=1 \
 step_build_unity_prj=0 \
 bash ./main.sh
 
+# Ubuntu
 unity_exe_file=/usr/bin/unity-editor \
 dot_prj_name_core=dot_prj_core \
 dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
@@ -69,6 +72,12 @@ step_install_unity_package=1 \
 step_create_dotnet_prj=1 \
 step_build_dotnet_prj=1 \
 step_build_unity_prj=0 \
+bash ./main.sh
+
+dot_prj_name_core=dot_prj_core \
+dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
+dot_prj_name_editor=dot_prj_editor \
+step_clean_clear=1 \
 bash ./main.sh
 ```
 
