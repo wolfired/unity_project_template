@@ -7,20 +7,21 @@ source $root_path/libunity.sh
 
 unity_exe_file=${unity_exe_file:-'/d/Unity.2021.2.0a21/Editor/Unity.exe'}
 unity_log_file=${unity_log_file:-'-'}
-unity_out_file=${unity_out_file:-"$root_path/out_u3d/main.apk"}
-unity_out_path=$(dirname $unity_out_file)
-
-dotnet_out_path=${dotnet_out_path:-"$root_path/out_dot"}
 
 dlls4editor=${dlls4editor:-"$root_path/dlls4editor"}
 
 u3d_prj_path=${u3d_prj_path:-"$root_path"}
 u3d_prj_name=${u3d_prj_name:-'u3d_prj'}
 
+u3d_out_file=${u3d_out_file:-"$root_path/out_u3d/$u3d_prj_name_`date +%s`.apk"}
+u3d_out_path=$(dirname $u3d_out_file)
+
 u3d_prj_builder_script=${u3d_prj_builder_script:-'com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build'}
 
 dot_sln_path=${dot_sln_path:-"$root_path"}
 dot_sln_name=${dot_sln_name:-'dot_prj'}
+
+dot_out_path=${dot_out_path:-"$root_path/out_dot"}
 
 dot_prj_path=$dot_sln_path
 dot_prj_name_core=${dot_prj_name_core:?'need core module name'}
@@ -48,14 +49,14 @@ function args_print() {
     printf '%48s: %s\n' 'Unity CMD' "$unity_cmd"
     printf '%48s: %s\n' 'Unity Prj Name' $u3d_prj_name
     printf '%48s: %s\n' 'Unity Log File' $unity_log_file
-    printf '%48s: %s\n' 'Unity Out Path' $unity_out_path
-    printf '%48s: %s\n' 'Unity Out File' $unity_out_file
+    printf '%48s: %s\n' 'Unity Out Path' $u3d_out_path
+    printf '%48s: %s\n' 'Unity Out File' $u3d_out_file
     printf '%48s: %s\n' 'Unity Build Script' $u3d_prj_builder_script
     printf '%48s: %s\n' 'Dotnet Sln Name' $dot_sln_name
     printf '%48s: %s\n' '( Core )Dotnet Prj Name' $dot_prj_name_core
     printf '%48s: %s\n' '( Mods )Dotnet Prj Name' $dot_prj_name_mods
     printf '%48s: %s\n' '(Editor)Dotnet Prj Name' $dot_prj_name_editor
-    printf '%48s: %s\n' 'Dotnet Out Path' $dotnet_out_path
+    printf '%48s: %s\n' 'Dotnet Out Path' $dot_out_path
 }
 
 # SCP上传文件
@@ -201,29 +202,29 @@ function dot_prj_create() {
 }
 
 function dot_prj_build() {
-    DotBuild $dot_sln_path $dot_sln_name $dotnet_out_path
-    DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_core true
-    DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_mods true
-    DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_editor true
+    DotBuild $dot_sln_path $dot_sln_name $dot_out_path
+    DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_core true
+    DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_mods true
+    DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_editor true
 
-    DotDLLsSrc2Dst $dotnet_out_path $dlls4editor $dot_prj_name_stage0 true
-    DotDLLsSrc2Dst $dotnet_out_path $dlls4editor $dot_prj_name_stage1 true
+    DotDLLsSrc2Dst $dot_out_path $dlls4editor $dot_prj_name_stage0 true
+    DotDLLsSrc2Dst $dot_out_path $dlls4editor $dot_prj_name_stage1 true
 
-    DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage0 true
-    DotDLLsSrc2Dst $dotnet_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage1 true
+    DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage0 true
+    DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage1 true
 }
 
 function u3d_prj_build() {
-    rm -rf $unity_out_path
-    mkdir -p $unity_out_path
-    UnityExecuteMethod $u3d_prj_path/$u3d_prj_name $u3d_prj_builder_script --builder_args_outfile $unity_out_file
+    rm -rf $u3d_out_path
+    mkdir -p $u3d_out_path
+    UnityExecuteMethod $u3d_prj_path/$u3d_prj_name $u3d_prj_builder_script --builder_args_outfile $u3d_out_file
 }
 
 args_print
 
 if (( 0 != $step_clean_clear )); then
-    rm -rf $unity_out_path
-    rm -rf $dotnet_out_path
+    rm -rf $u3d_out_path
+    rm -rf $dot_out_path
 
     rm -rf $u3d_prj_path/$u3d_prj_name/.vscode
     rm -rf $u3d_prj_path/$u3d_prj_name/Library
@@ -318,4 +319,6 @@ if (( 0 != $step_build_unity_prj )); then
     com.wolfired.dot_prj_stage1.UnityEditorHelper.CreateDefaultScene
 
     u3d_prj_build
+
+    scp_upload $u3d_out_file 
 fi
