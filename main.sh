@@ -282,6 +282,20 @@ if (( 0 != $step_install_unity_package )); then
     $u3d_prj_path/$u3d_prj_name \
     com.wolfired.dot_prj_stage1.UnityEditorHelper.SetupVSCode
 
+    sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/Mono.Options.dll.meta
+
+    sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_stage0.dll.meta
+    sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_stage1.dll.meta
+    sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_editor.dll.meta
+
+    sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $u3d_prj_path/$u3d_prj_name/Assets/Plugins/$dot_prj_name_core.dll.meta
+
+    readarray -td, arr_dot_prj_name_mod <<<"$dot_prj_name_mods,"
+    unset 'arr_dot_prj_name_mod[-1]'
+    for dot_prj_name in "${arr_dot_prj_name_mod[@]}"; do
+        sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $u3d_prj_path/$u3d_prj_name/Assets/Plugins/$dot_prj_name.dll.meta
+    done
+
     UnityExecuteMethod \
     $u3d_prj_path/$u3d_prj_name \
     com.wolfired.dot_prj_stage1.CodeEditorHelper.GenU3DProjectFiles
@@ -298,5 +312,13 @@ if (( 0 != $step_build_dotnet_prj )); then
 fi
 
 if (( 0 != $step_build_unity_prj )); then
+    UnityExecuteMethod \
+    $u3d_prj_path/$u3d_prj_name \
+    com.wolfired.dot_prj_stage1.UnityEditorHelper.SetupAndroidSDKNDK
+
+    UnityExecuteMethod \
+    $u3d_prj_path/$u3d_prj_name \
+    com.wolfired.dot_prj_stage1.UnityEditorHelper.CreateDefaultScene
+
     u3d_prj_build
 fi

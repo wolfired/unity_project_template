@@ -154,25 +154,27 @@ namespace com.wolfired.dot_prj_stage1
                 EditorApplication.Exit(0);
             }
         }
+    }
 
-        public class DefaultAndroidBuilder
+    public class DefaultAndroidBuilder
+    {
+        public static void Build()
         {
-            public static void Build()
-            {
-                var outfile = "";
-                var optionSet = new OptionSet{
+            UnityEditorHelper.SetupAndroidSDKNDK();
+
+            var outfile = "";
+            var optionSet = new OptionSet{
                     {"builder_args_outfile=", "unity build out file", v => outfile = v},
                 };
-                optionSet.Parse(System.Environment.GetCommandLineArgs());
+            optionSet.Parse(System.Environment.GetCommandLineArgs());
 
-                BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
-                buildPlayerOptions.scenes = new[] { "Assets/Default.unity" };
-                buildPlayerOptions.locationPathName = outfile;
-                buildPlayerOptions.target = BuildTarget.Android;
-                buildPlayerOptions.options = BuildOptions.None;
+            BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
+            buildPlayerOptions.scenes = new[] { "Assets/Default.unity" };
+            buildPlayerOptions.locationPathName = outfile;
+            buildPlayerOptions.target = BuildTarget.Android;
+            buildPlayerOptions.options = BuildOptions.None;
 
-                BuildPipeline.BuildPlayer(buildPlayerOptions);
-            }
+            BuildPipeline.BuildPlayer(buildPlayerOptions);
         }
     }
 }
