@@ -28,8 +28,6 @@ namespace com.wolfired.dot_prj_stage1
     {
         public static void SetupAndroidSDKNDK()
         {
-            var exit_code = 0;
-
             var prefs_key_ndk_root = "AndroidNdkRoot";
             var prefs_val_ndk_root = "";
             if (EditorPrefs.HasKey(prefs_key_ndk_root))
@@ -46,7 +44,6 @@ namespace com.wolfired.dot_prj_stage1
                     if (null == prefs_val_ndk_root || "" == prefs_val_ndk_root || !Directory.Exists(prefs_val_ndk_root))
                     {
                         Debug.Log("You Need Setup Env Var: ANDROID_NDK_ROOT");
-                        exit_code = 1;
                     }
                     else
                     {
@@ -73,7 +70,6 @@ namespace com.wolfired.dot_prj_stage1
                 if (null == prefs_val_sdk_root || "" == prefs_val_sdk_root || !Directory.Exists(prefs_val_sdk_root))
                 {
                     Debug.Log("You Need Setup Env Var: ANDROID_SDK_ROOT");
-                    exit_code = 1;
                 }
                 else
                 {
