@@ -314,10 +314,6 @@ fi
 if (( 0 != $step_build_unity_prj )); then
     UnityExecuteMethod \
     $u3d_prj_path/$u3d_prj_name \
-    com.wolfired.dot_prj_stage1.UnityEditorHelper.SetupAndroidSDKNDK
-
-    UnityExecuteMethod \
-    $u3d_prj_path/$u3d_prj_name \
     com.wolfired.dot_prj_stage1.UnityEditorHelper.CreateDefaultScene
 
     u3d_prj_build
