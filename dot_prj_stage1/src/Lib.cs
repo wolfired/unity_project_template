@@ -81,11 +81,6 @@ namespace com.wolfired.dot_prj_stage1
                 }
             }
             Debug.Log("AndroidSdkRoot: " + prefs_val_sdk_root);
-
-            if (Application.isBatchMode)
-            {
-                EditorApplication.Exit(exit_code);
-            }
         }
 
         public static void SetupVSCode()
