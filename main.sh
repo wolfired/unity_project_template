@@ -284,18 +284,12 @@ if (( 0 != $step_install_unity_package )); then
     $u3d_prj_path/$u3d_prj_name \
     com.wolfired.dot_prj_stage1.UnityEditorHelper.SetupVSCode
 
-    sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/Mono.Options.dll.meta
+    for dll_meta_file in $(ls $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/*.dll.meta); do
+        sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $dll_meta_file
+    done
 
-    sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_stage0.dll.meta
-    sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_stage1.dll.meta
-    sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_editor.dll.meta
-
-    sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $u3d_prj_path/$u3d_prj_name/Assets/Plugins/$dot_prj_name_core.dll.meta
-
-    readarray -td, arr_dot_prj_name_mod <<<"$dot_prj_name_mods,"
-    unset 'arr_dot_prj_name_mod[-1]'
-    for dot_prj_name in "${arr_dot_prj_name_mod[@]}"; do
-        sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $u3d_prj_path/$u3d_prj_name/Assets/Plugins/$dot_prj_name.dll.meta
+    for dll_meta_file in $(ls $u3d_prj_path/$u3d_prj_name/Assets/Plugins/*.dll.meta); do
+        sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $dll_meta_file
     done
 
     UnityExecuteMethod \
