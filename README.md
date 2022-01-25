@@ -56,7 +56,7 @@ step_create_unity_prj=1 \
 step_install_unity_package=1 \
 step_create_dotnet_prj=1 \
 step_build_dotnet_prj=1 \
-step_build_unity_prj=0 \
+step_build_unity_prj=1 \
 bash ./main.sh
 
 # Ubuntu

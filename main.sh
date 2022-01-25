@@ -17,6 +17,8 @@ dlls4editor=${dlls4editor:-"$root_path/dlls4editor"}
 u3d_prj_path=${u3d_prj_path:-"$root_path"}
 u3d_prj_name=${u3d_prj_name:-'u3d_prj'}
 
+u3d_prj_builder_script=${u3d_prj_builder_script:-'com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build'}
+
 dot_sln_path=${dot_sln_path:-"$root_path"}
 dot_sln_name=${dot_sln_name:-'dot_prj'}
 
@@ -48,6 +50,7 @@ function args_print() {
     printf '%48s: %s\n' 'Unity Log File' $unity_log_file
     printf '%48s: %s\n' 'Unity Out Path' $unity_out_path
     printf '%48s: %s\n' 'Unity Out File' $unity_out_file
+    printf '%48s: %s\n' 'Unity Build Script' $u3d_prj_builder_script
     printf '%48s: %s\n' 'Dotnet Sln Name' $dot_sln_name
     printf '%48s: %s\n' '( Core )Dotnet Prj Name' $dot_prj_name_core
     printf '%48s: %s\n' '( Mods )Dotnet Prj Name' $dot_prj_name_mods
@@ -86,6 +89,8 @@ function env_prepare() {
     wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
     add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
     apt install -y code
+
+    export VSCODE_CMD=/usr/bin/code
 
     wget https://dot.net/v1/dotnet-install.sh \
     && bash ./dotnet-install.sh --channel 5.0 \
@@ -210,7 +215,7 @@ function dot_prj_build() {
 
 function u3d_prj_build() {
     rm -rf $unity_out_path
-    UnityExecuteMethod $u3d_prj_path/$u3d_prj_name com.wolfired.dot_prj_editor.AndroidBuilder.Build $unity_out_file
+    UnityExecuteMethod $u3d_prj_path/$u3d_prj_name $u3d_prj_builder_script --builder_args_outfile $unity_out_file
 }
 
 args_print

@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 
+using Mono.Options;
+
 using UnityEngine;
 using UnityEditor;
 using Unity.CodeEditor;
@@ -150,6 +152,26 @@ namespace com.wolfired.dot_prj_stage1
             if (Application.isBatchMode)
             {
                 EditorApplication.Exit(0);
+            }
+        }
+
+        public class DefaultAndroidBuilder
+        {
+            public static void Build()
+            {
+                var outfile = "";
+                var optionSet = new OptionSet{
+                    {"builder_args_outfile=", "unity build out file", v => outfile = v},
+                };
+                optionSet.Parse(System.Environment.GetCommandLineArgs());
+
+                BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
+                buildPlayerOptions.scenes = new[] { "Assets/Default.unity" };
+                buildPlayerOptions.locationPathName = outfile;
+                buildPlayerOptions.target = BuildTarget.Android;
+                buildPlayerOptions.options = BuildOptions.None;
+
+                BuildPipeline.BuildPlayer(buildPlayerOptions);
             }
         }
     }
