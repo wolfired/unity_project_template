@@ -215,6 +215,7 @@ function dot_prj_build() {
 
 function u3d_prj_build() {
     rm -rf $unity_out_path
+    mkdir -p $unity_out_path
     UnityExecuteMethod $u3d_prj_path/$u3d_prj_name $u3d_prj_builder_script --builder_args_outfile $unity_out_file
 }
 
