@@ -153,7 +153,7 @@ function dot_prj_create() {
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_stage0
     if [[ 0 -eq $? ]]; then
-        DotProjectAddPackages $dot_prj_path/$dot_prj_name_stage0 Mono.Options
+        DotProjectAddPackage $dot_prj_path/$dot_prj_name_stage0 Mono.Options 6.12.0.148
 
         u3dot_converter \
         --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp-Editor.csproj \
@@ -164,7 +164,7 @@ function dot_prj_create() {
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_stage1
     if [[ 0 -eq $? ]]; then
-        DotProjectAddPackages $dot_prj_path/$dot_prj_name_stage1 Mono.Options
+        DotProjectAddPackage $dot_prj_path/$dot_prj_name_stage1 Mono.Options 6.12.0.148
 
         u3dot_converter \
         --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp-Editor.csproj \
@@ -175,7 +175,7 @@ function dot_prj_create() {
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_editor
     if [[ 0 -eq $? ]]; then
-        DotProjectAddPackages $dot_prj_path/$dot_prj_name_editor Mono.Options
+        DotProjectAddPackage $dot_prj_path/$dot_prj_name_editor Mono.Options 6.12.0.148
         DotProjectAddReference $dot_prj_path/$dot_prj_name_editor $dot_prj_path/$dot_prj_name_core
 
         readarray -td, arr_dot_prj_name_mod <<<"$dot_prj_name_mods,"

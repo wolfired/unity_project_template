@@ -106,14 +106,22 @@ EOF
     return 0
 }
 
+function DotProjectAddPackage() {
+    local path_prj=${1:?'need dotnet prj path'}
+    local package_name=${2:?'need package name'}
+    local package_version=${3:?'need package version'}
+
+    dotnet add $path_prj package -v $package_version $package_name
+}
+
 function DotProjectAddPackages() {
     local path_prj=${1:?'need dotnet prj path'}
-    local name_packages=${2:?"need package name list"} # pack_name0,pack_name1,pacak_name2
+    local package_names=${2:?"need package name list"} # pack_name0,pack_name1,pacak_name2
 
-    readarray -td, arr_name_package <<<"$name_packages,"
-    unset 'arr_name_package[-1]'
-    for name_package in "${arr_name_package[@]}"; do
-        dotnet add $path_prj package $name_package
+    readarray -td, arr_package_name <<<"$package_names,"
+    unset 'arr_package_name[-1]'
+    for package_name in "${arr_package_name[@]}"; do
+        dotnet add $path_prj package $package_name
     done
 }
 
