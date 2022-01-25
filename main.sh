@@ -13,7 +13,7 @@ dlls4editor=${dlls4editor:-"$root_path/dlls4editor"}
 u3d_prj_path=${u3d_prj_path:-"$root_path"}
 u3d_prj_name=${u3d_prj_name:-'u3d_prj'}
 
-u3d_out_file=${u3d_out_file:-"$root_path/out_u3d/$u3d_prj_name_`date +%s`.apk"}
+u3d_out_file=${u3d_out_file:-"$root_path/out_u3d/${u3d_prj_name}_`date +%s`.apk"}
 u3d_out_path=$(dirname $u3d_out_file)
 
 u3d_prj_builder_script=${u3d_prj_builder_script:-'com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build'}
