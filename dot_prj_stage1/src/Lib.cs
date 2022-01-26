@@ -26,7 +26,7 @@ namespace com.wolfired.dot_prj_stage1
 
     public class UnityEditorHelper
     {
-        public static void SetupAndroidSDKNDK()
+        internal static void SetupAndroidSDKNDK()
         {
             var prefs_key_ndk_root = "AndroidNdkRoot";
             var prefs_val_ndk_root = "";

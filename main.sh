@@ -40,8 +40,8 @@ step_create_dotnet_prj=${step_create_dotnet_prj:-0}
 step_build_dotnet_prj=${step_build_dotnet_prj:-0}
 step_build_unity_prj=${step_build_unity_prj:-0}
 
-# -noUpm -quit
-unity_cmd="$unity_exe_file -logFile $unity_log_file -batchmode -nographics"
+# -noUpm -quit -disable-gpu-skinning -nographics
+unity_cmd="$unity_exe_file -logFile $unity_log_file -batchmode"
 
 function args_print() {
     printf '%48s: %s\n' 'Project Root Path' $root_path
