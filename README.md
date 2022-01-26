@@ -3,7 +3,9 @@ unity_project_template
 
 这是一个Unity项目模板
 
-# dot_prj_booter
+# dot_prj_stage0
+
+# dot_prj_stage1
 
 # 用法
 

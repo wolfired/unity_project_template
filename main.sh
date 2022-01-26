@@ -221,6 +221,11 @@ function u3d_prj_build() {
     UnityExecuteMethod $u3d_prj_path/$u3d_prj_name $u3d_prj_builder_script --builder_args_outfile $u3d_out_file
 }
 
+function u3d_amend_dlls() {
+    find $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins -name '*.dll.meta' -type f -exec sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" {} \;
+    find $u3d_prj_path/$u3d_prj_name/Assets/Plugins -name '*.dll.meta' -type f -exec sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" {} \;
+}
+
 args_print
 
 if (( 0 != $step_clean_clear )); then
@@ -285,13 +290,7 @@ if (( 0 != $step_install_unity_package )); then
     $u3d_prj_path/$u3d_prj_name \
     com.wolfired.dot_prj_stage1.UnityEditorHelper.SetupVSCode
 
-    for dll_meta_file in $(ls $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/*.dll.meta); do
-        sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $dll_meta_file
-    done
-
-    for dll_meta_file in $(ls $u3d_prj_path/$u3d_prj_name/Assets/Plugins/*.dll.meta); do
-        sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" $dll_meta_file
-    done
+    u3d_amend_dlls
 
     UnityExecuteMethod \
     $u3d_prj_path/$u3d_prj_name \
@@ -306,6 +305,8 @@ fi
 
 if (( 0 != $step_build_dotnet_prj )); then
     dot_prj_build
+
+    u3d_amend_dlls
 fi
 
 if (( 0 != $step_build_unity_prj )); then

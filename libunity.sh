@@ -10,8 +10,10 @@ function UnityCreateProject() {
 
     mkdir -p $(dirname $path_prj)
     mkdir -p $path_prj/Assets/Plugins
+    touch $path_prj/Assets/Plugins/.gitkeep
     mkdir -p $path_prj/Assets/Scripts
     mkdir -p $path_prj/Assets/Editor/Plugins
+    touch $path_prj/Assets/Editor/Plugins/.gitkeep
     mkdir -p $path_prj/Assets/Editor/Scripts
 
 cat <<EOF > $path_prj/Assets/Scripts/Placeholder.cs
