@@ -104,8 +104,8 @@ function env_prepare() {
         dotnet tool install -g wolfired.u3dot_converter
     fi
 
-    export -n http_proxy
-    export -n https_proxy
+    # export -n http_proxy
+    # export -n https_proxy
 }
 
 function activate_unity() {
