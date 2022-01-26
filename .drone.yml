@@ -9,4 +9,4 @@ steps:
 - name: build
   image: unityci/editor:ubuntu-2019.4.6f1-android-0.15.0
   commands:
-  - unity_exe_file=/usr/bin/unity-editor dot_prj_name_core=dot_prj_core dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 dot_prj_name_editor=dot_prj_editor step_env_prepare=1 step_activate_unity=1 step_create_unity_prj=1 step_install_unity_package=1 step_create_dotnet_prj=1 step_build_dotnet_prj=1 step_build_unity_prj=1 bash ./main.sh
+  - unity_exe_file=/usr/bin/unity-editor dot_prj_name_core=dot_prj_core dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 dot_prj_name_editor=dot_prj_editor unity_log_file=u3d_editor_`date +%Y%m%d_%H%M%S`.log step_env_prepare=1 step_activate_unity=1 step_create_unity_prj=1 step_install_unity_package=1 step_create_dotnet_prj=1 step_build_dotnet_prj=1 step_build_unity_prj=1 bash ./main.sh
