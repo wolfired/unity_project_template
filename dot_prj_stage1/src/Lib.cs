@@ -166,6 +166,11 @@ namespace com.wolfired.dot_prj_stage1
             buildPlayerOptions.options = BuildOptions.None;
 
             BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(0);
+            }
         }
     }
 }

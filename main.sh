@@ -1,6 +1,7 @@
 #!/bin/env bash
 
-root_path=$(dirname $0)
+root_full=$(readlink -f "$0")
+root_path=$(dirname $root_full)
 
 source $root_path/libdot.sh
 source $root_path/libunity.sh
@@ -13,7 +14,7 @@ dlls4editor=${dlls4editor:-"$root_path/dlls4editor"}
 u3d_prj_path=${u3d_prj_path:-"$root_path"}
 u3d_prj_name=${u3d_prj_name:-'u3d_prj'}
 
-u3d_out_file=${u3d_out_file:-"$root_path/out_u3d/${u3d_prj_name}_`date +%s`.apk"}
+u3d_out_file=${u3d_out_file:-"$root_path/out_u3d/${u3d_prj_name}_`date +%Y%m%d_%H%M%S`.apk"}
 u3d_out_path=$(dirname $u3d_out_file)
 
 u3d_prj_builder_script=${u3d_prj_builder_script:-'com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build'}
@@ -41,7 +42,7 @@ step_build_dotnet_prj=${step_build_dotnet_prj:-0}
 step_build_unity_prj=${step_build_unity_prj:-0}
 
 # -noUpm -quit -disable-gpu-skinning -nographics
-unity_cmd="$unity_exe_file -logFile $unity_log_file -batchmode"
+unity_cmd="$unity_exe_file -logFile $unity_log_file -batchmode -nographics"
 
 function args_print() {
     printf '%48s: %s\n' 'Project Root Path' $root_path
@@ -70,7 +71,7 @@ function scp_upload() {
         return
     fi
 
-    local scp_id_file=scp_id_file_`date +%s`
+    local scp_id_file=scp_id_file_`date +%Y%m%d_%H%M%S`
     curl -s $web_share_url/scp_id_file -o $scp_id_file && \
     chmod 400 $scp_id_file && \
     scp -o StrictHostKeyChecking=no -P 2222 -i ./$scp_id_file $upload_file hd@ssh.mac.com:/Users/hd/nginx/html/share/ && \
