@@ -226,6 +226,8 @@ function u3d_amend_dlls() {
     find $u3d_prj_path/$u3d_prj_name/Assets/Plugins -name '*.dll.meta' -type f -exec sed -i "s/isExplicitlyReferenced: 0/isExplicitlyReferenced: 1/g" {} \;
 }
 
+# Entrance
+
 args_print
 
 if (( 0 != $step_clean_clear )); then
