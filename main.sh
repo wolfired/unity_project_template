@@ -284,7 +284,7 @@ if (( 0 != $step_install_unity_package )); then
 
     UnityExecuteMethod \
     $u3d_prj_path/$u3d_prj_name \
-    com.wolfired.dot_prj_stage0.UnityPackageHelper.Install --upm_i_args_package_id com.unity.ide.vscode
+    com.wolfired.dot_prj_stage0.UnityPackageHelper.Install --uph_i_args_package_id com.unity.ide.vscode
 
     UnityExecuteMethod \
     $u3d_prj_path/$u3d_prj_name \

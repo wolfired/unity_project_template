@@ -30,13 +30,13 @@ namespace com.wolfired.dot_prj_stage0
         {
             var packageIds = new List<string>();
             var optionSet = new OptionSet{
-                    {"upm_i_args_package_id=", "package id to be installed", v => packageIds.Add(v)},
+                    {"uph_i_args_package_id=", "package id to be installed", v => packageIds.Add(v)},
                 };
             optionSet.Parse(System.Environment.GetCommandLineArgs());
 
             GetInstalledList((pc) =>
             {
-                for (int i = 0; i < packageIds.Count; ++i)
+                for (int i = packageIds.Count - 1; i >= 0; --i)
                 {
                     foreach (var pi in pc)
                     {
