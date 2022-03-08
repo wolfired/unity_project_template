@@ -166,7 +166,8 @@ function dot_prj_create() {
         --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp-Editor.csproj \
         --nssrc 'http://schemas.microsoft.com/developer/msbuild/2003' \
         --cfdst $dot_prj_path/$dot_prj_name_stage0/$dot_prj_name_stage0.csproj \
-        --skips 'Assembly-CSharp.csproj'
+        --skips 'Assembly-CSharp.csproj' \
+        --skips 'Mono.Options'
     fi
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_stage1
@@ -177,7 +178,8 @@ function dot_prj_create() {
         --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp-Editor.csproj \
         --nssrc 'http://schemas.microsoft.com/developer/msbuild/2003' \
         --cfdst $dot_prj_path/$dot_prj_name_stage1/$dot_prj_name_stage1.csproj \
-        --skips 'Assembly-CSharp.csproj'
+        --skips 'Assembly-CSharp.csproj' \
+        --skips 'Mono.Options'
     fi
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_editor
@@ -204,12 +206,13 @@ function dot_prj_create() {
 
 function dot_prj_build() {
     DotBuild $dot_sln_path $dot_sln_name $dot_out_path
+
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_core true
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_mods true
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_editor true
 
-    DotDLLsSrc2Dst $dot_out_path $dlls4editor $dot_prj_name_stage0 true
-    DotDLLsSrc2Dst $dot_out_path $dlls4editor $dot_prj_name_stage1 true
+    # DotDLLsSrc2Dst $dot_out_path $dlls4editor $dot_prj_name_stage0 true
+    # DotDLLsSrc2Dst $dot_out_path $dlls4editor $dot_prj_name_stage1 true
 
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage0 true
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage1 true
@@ -284,19 +287,34 @@ fi
 if (( 0 != $step_install_unity_package )); then
     cp -v -u $dlls4editor/* $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/
 
+    if [[ ! -f $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_stage0.dll ]]; then
+        mkdir -p $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage0
+        cp -v -u $dot_prj_path/$dot_prj_name_stage0/src/*.cs $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage0
+    else
+        u3d_amend_dlls
+    fi
+
     UnityExecuteMethod \
     $u3d_prj_path/$u3d_prj_name \
     com.wolfired.dot_prj_stage0.UnityPackageHelper.Install --uph_i_args_package_id com.unity.ide.vscode
+
+    if [[ ! -f $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_stage1.dll ]]; then
+        mkdir -p $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage1
+        cp -v -u $dot_prj_path/$dot_prj_name_stage1/src/*.cs $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage1
+    else
+        u3d_amend_dlls
+    fi
 
     UnityExecuteMethod \
     $u3d_prj_path/$u3d_prj_name \
     com.wolfired.dot_prj_stage1.UnityEditorHelper.SetupVSCode
 
-    u3d_amend_dlls
-
     UnityExecuteMethod \
     $u3d_prj_path/$u3d_prj_name \
     com.wolfired.dot_prj_stage1.CodeEditorHelper.GenU3DProjectFiles
+
+    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage0
+    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage1
 fi
 
 if (( 0 != $step_create_dotnet_prj )); then
