@@ -116,7 +116,11 @@ function DotProjectAddPackage() {
 
 function DotProjectAddPackages() {
     local path_prj=${1:?'need dotnet prj path'}
-    local package_names=${2:?"need package name list"} # pack_name0,pack_name1,pacak_name2
+    local package_names=${2:-""} # pack_name0,pack_name1,pacak_name2
+
+    if [[ ! -n $package_names || -z $package_names ]]; then
+        return
+    fi
 
     readarray -td, arr_package_name <<<"$package_names,"
     unset 'arr_package_name[-1]'

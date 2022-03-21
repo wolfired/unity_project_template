@@ -10,6 +10,9 @@
 /dot_prj_stage1/obj/
 /dot_prj_stage1/*.csproj
 
+/refs4player/
+/refs4editor/
+
 /out_dot/
 /out_u3d/
 

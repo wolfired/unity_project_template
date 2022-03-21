@@ -9,7 +9,8 @@ source $root_path/libunity.sh
 unity_exe_file=${unity_exe_file:-'/d/Unity.2021.2.0a21/Editor/Unity.exe'}
 unity_log_file=${unity_log_file:-'-'}
 
-dlls4editor=${dlls4editor:-"$root_path/dlls4editor"}
+refs4player=${refs4player:-"Mono.Options"}
+refs4editor=${refs4editor:-""}
 
 u3d_prj_path=${u3d_prj_path:-"$root_path"}
 u3d_prj_name=${u3d_prj_name:-'u3d_prj'}
@@ -36,10 +37,12 @@ step_clean_clear=${step_clean_clear:-0}
 step_env_prepare=${step_env_prepare:-0}
 step_activate_unity=${step_activate_unity:-0}
 step_create_unity_prj=${step_create_unity_prj:-0}
+step_dotnet_refs=${step_dotnet_refs:-0}
 step_install_unity_package=${step_install_unity_package:-0}
 step_create_dotnet_prj=${step_create_dotnet_prj:-0}
 step_build_dotnet_prj=${step_build_dotnet_prj:-0}
 step_build_unity_prj=${step_build_unity_prj:-0}
+step_upload=${step_upload:-0}
 
 # -noUpm -quit -disable-gpu-skinning -nographics
 unity_cmd="$unity_exe_file -logFile $unity_log_file -batchmode -nographics"
@@ -138,6 +141,8 @@ function dot_prj_create() {
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_core
     if [[ 0 -eq $? ]]; then
+        DotProjectAddReference $dot_prj_path/$dot_prj_name_core $dot_prj_path/refs4player
+
         u3dot_converter \
         --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp.csproj \
         --nssrc 'http://schemas.microsoft.com/developer/msbuild/2003' \
@@ -160,7 +165,7 @@ function dot_prj_create() {
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_stage0
     if [[ 0 -eq $? ]]; then
-        DotProjectAddPackage $dot_prj_path/$dot_prj_name_stage0 Mono.Options 6.12.0.148
+        DotProjectAddReference $dot_prj_path/$dot_prj_name_stage0 $dot_prj_path/refs4editor
 
         u3dot_converter \
         --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp-Editor.csproj \
@@ -172,7 +177,7 @@ function dot_prj_create() {
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_stage1
     if [[ 0 -eq $? ]]; then
-        DotProjectAddPackage $dot_prj_path/$dot_prj_name_stage1 Mono.Options 6.12.0.148
+        DotProjectAddReference $dot_prj_path/$dot_prj_name_stage1 $dot_prj_path/refs4editor
 
         u3dot_converter \
         --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp-Editor.csproj \
@@ -184,7 +189,6 @@ function dot_prj_create() {
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_editor
     if [[ 0 -eq $? ]]; then
-        DotProjectAddPackage $dot_prj_path/$dot_prj_name_editor Mono.Options 6.12.0.148
         DotProjectAddReference $dot_prj_path/$dot_prj_name_editor $dot_prj_path/$dot_prj_name_core
 
         readarray -td, arr_dot_prj_name_mod <<<"$dot_prj_name_mods,"
@@ -210,9 +214,6 @@ function dot_prj_build() {
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_core true
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_mods true
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_editor true
-
-    # DotDLLsSrc2Dst $dot_out_path $dlls4editor $dot_prj_name_stage0 true
-    # DotDLLsSrc2Dst $dot_out_path $dlls4editor $dot_prj_name_stage1 true
 
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage0 true
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage1 true
@@ -267,6 +268,14 @@ if (( 0 != $step_clean_clear )); then
     rm -rf $dot_prj_path/$dot_prj_name_stage1/obj
     rm -rf $dot_prj_path/$dot_prj_name_stage1/*.csproj
 
+    rm -rf $dot_prj_path/refs4player/bin
+    rm -rf $dot_prj_path/refs4player/obj
+    rm -rf $dot_prj_path/refs4player/*.csproj
+
+    rm -rf $dot_prj_path/refs4editor/bin
+    rm -rf $dot_prj_path/refs4editor/obj
+    rm -rf $dot_prj_path/refs4editor/*.csproj
+
     rm -rf $dot_sln_path/$dot_sln_name.sln
 
     rm -rf *.log
@@ -284,9 +293,39 @@ if (( 0 != $step_create_unity_prj )); then
     UnityCreateProject $u3d_prj_path/$u3d_prj_name
 fi
 
-if (( 0 != $step_install_unity_package )); then
-    cp -v -u $dlls4editor/* $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/
+if (( 0 != $step_dotnet_refs )); then
+    DotSolutionNew $dot_sln_path $dot_sln_name
 
+    DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/refs4player
+    if [[ 0 -eq $? ]]; then
+        DotProjectAddPackages $dot_prj_path/refs4player $refs4player
+
+        u3dot_converter \
+        --cfdst $dot_prj_path/refs4player/refs4player.csproj
+    fi
+
+    DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/refs4editor
+    if [[ 0 -eq $? ]]; then
+        DotProjectAddReference $dot_prj_path/refs4editor $dot_prj_path/refs4player
+
+        DotProjectAddPackages $dot_prj_path/refs4editor $refs4editor
+
+        u3dot_converter \
+        --cfdst $dot_prj_path/refs4editor/refs4editor.csproj
+    fi
+
+    DotBuild $dot_sln_path $dot_sln_name $dot_out_path
+
+    if [[ -n $refs4player && ! -z $refs4player ]]; then
+        DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $refs4player false
+    fi
+
+    if [[ -n $refs4editor && ! -z $refs4editor ]]; then
+        DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $refs4editor false
+    fi
+fi
+
+if (( 0 != $step_install_unity_package )); then
     if [[ ! -f $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_stage0.dll ]]; then
         mkdir -p $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage0
         cp -v -u $dot_prj_path/$dot_prj_name_stage0/src/*.cs $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage0
@@ -318,8 +357,6 @@ if (( 0 != $step_install_unity_package )); then
 fi
 
 if (( 0 != $step_create_dotnet_prj )); then
-    DotSolutionNew $dot_sln_path $dot_sln_name
-
     dot_prj_create $dot_prj_name_core $dot_prj_name_mods $dot_prj_name_editor $dot_prj_name_stage0 $dot_prj_name_stage1
 fi
 
@@ -335,6 +372,8 @@ if (( 0 != $step_build_unity_prj )); then
     com.wolfired.dot_prj_stage1.UnityEditorHelper.CreateDefaultScene
 
     u3d_prj_build
+fi
 
-    scp_upload $u3d_out_file 
+if (( 0 != $step_upload )); then
+    scp_upload $u3d_out_file
 fi

@@ -44,10 +44,12 @@ unity_log_file=u3d_editor_`date +%Y%m%d_%H%M%S`.log \
 step_env_prepare=0 \
 step_activate_unity=0 \
 step_create_unity_prj=1 \
+step_dotnet_refs=1 \
 step_install_unity_package=1 \
 step_create_dotnet_prj=1 \
 step_build_dotnet_prj=1 \
 step_build_unity_prj=1 \
+step_upload=0 \
 bash ./main.sh
 
 # Windows
@@ -59,10 +61,12 @@ unity_log_file=u3d_editor_`date +%Y%m%d_%H%M%S`.log \
 step_env_prepare=0 \
 step_activate_unity=0 \
 step_create_unity_prj=0 \
+step_dotnet_refs=1 \
 step_install_unity_package=0 \
 step_create_dotnet_prj=0 \
 step_build_dotnet_prj=1 \
 step_build_unity_prj=0 \
+step_upload=0 \
 bash ./main.sh
 
 # Ubuntu
@@ -74,10 +78,12 @@ unity_log_file=u3d_editor_`date +%Y%m%d_%H%M%S`.log \
 step_env_prepare=1 \
 step_activate_unity=1 \
 step_create_unity_prj=1 \
+step_dotnet_refs=1 \
 step_install_unity_package=1 \
 step_create_dotnet_prj=1 \
 step_build_dotnet_prj=1 \
 step_build_unity_prj=1 \
+step_upload=0 \
 bash ./main.sh
 
 dot_prj_name_core=dot_prj_core \
