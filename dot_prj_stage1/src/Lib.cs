@@ -17,6 +17,7 @@ namespace com.wolfired.dot_prj_stage1
         public static void GenU3DProjectFiles()
         {
             CodeEditor.CurrentEditor.SyncAll();
+
             if (Application.isBatchMode)
             {
                 EditorApplication.Exit(0);
@@ -218,6 +219,19 @@ namespace com.wolfired.dot_prj_stage1
             buildPlayerOptions.options = BuildOptions.None;
 
             BuildPipeline.BuildPlayer(buildPlayerOptions);
+
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(0);
+            }
+        }
+    }
+
+    public class Testbed
+    {
+        public static void Test()
+        {
+            Debug.Log(BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows));
 
             if (Application.isBatchMode)
             {
