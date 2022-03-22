@@ -234,6 +234,8 @@ namespace com.wolfired.dot_prj_stage1
             Debug.Log(PlayerSettings.GetArchitecture(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)));
             Debug.Log(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
             Debug.Log(EditorUserBuildSettings.activeBuildTarget);
+            Debug.Log(BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows));
+            Debug.Log(BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64));
 
             if (Application.isBatchMode)
             {
