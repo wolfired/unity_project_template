@@ -247,8 +247,6 @@ function u3d_amend_dlls() {
 
 args_print
 
-exit 0
-
 if (( 0 != $step_clean_clear )); then
     rm -rf $u3d_out_path
     rm -rf $dot_out_path
