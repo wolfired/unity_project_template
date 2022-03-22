@@ -232,6 +232,7 @@ namespace com.wolfired.dot_prj_stage1
         public static void Test()
         {
             Debug.Log(BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows));
+            Debug.Log(BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64));
 
             if (Application.isBatchMode)
             {
