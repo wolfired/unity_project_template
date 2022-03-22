@@ -6,8 +6,10 @@ root_path=$(dirname $root_full)
 source $root_path/libdot.sh
 source $root_path/libunity.sh
 
+timestamp=`date +%Y%m%d_%H%M%S`
+
 unity_exe_file=${unity_exe_file:-'/d/Unity.2021.2.0a21/Editor/Unity.exe'}
-unity_log_file=${unity_log_file:-'-'}
+unity_log_file=${unity_log_file:-"u3d_editor_$timestamp.log"}
 
 refs4player=${refs4player:-"Mono.Options"} # DLL_NAME0,DLL_NAME1
 refs4editor=${refs4editor:-""} # DLL_NAME0,DLL_NAME1
@@ -15,7 +17,7 @@ refs4editor=${refs4editor:-""} # DLL_NAME0,DLL_NAME1
 u3d_prj_path=${u3d_prj_path:-"$root_path"}
 u3d_prj_name=${u3d_prj_name:-'u3d_prj'}
 
-u3d_out_file=${u3d_out_file:-"$root_path/out_u3d/${u3d_prj_name}_`date +%Y%m%d_%H%M%S`.apk"}
+u3d_out_file=${u3d_out_file:-"$root_path/out_u3d/${u3d_prj_name}_$timestamp.apk"}
 u3d_out_path=$(dirname $u3d_out_file)
 
 u3d_prj_builder_script=${u3d_prj_builder_script:-'com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build'}
@@ -90,7 +92,7 @@ function scp_upload() {
         return
     fi
 
-    local scp_id_file=scp_id_file_`date +%Y%m%d_%H%M%S`
+    local scp_id_file=scp_id_file_$timestamp
     curl -s $web_share_url/scp_id_file -o $scp_id_file && \
     chmod 400 $scp_id_file && \
     scp -o StrictHostKeyChecking=no -P 2222 -i ./$scp_id_file $upload_file hd@ssh.mac.com:/Users/hd/nginx/html/share/ && \
