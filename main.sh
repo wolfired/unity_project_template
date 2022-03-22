@@ -17,7 +17,7 @@ refs4editor=${refs4editor:-''} # DLL_NAME0,DLL_NAME1
 u3d_prj_path=${u3d_prj_path:-"$root_path"}
 u3d_prj_name=${u3d_prj_name:-'u3d_prj'}
 
-u3d_build_target=${u3d_build_target:-'Android'}
+u3d_build_target=${u3d_build_target:+"-buildTarget $u3d_build_target"}
 
 u3d_out_path=${u3d_out_path:-"$root_path/out_u3d"}
 u3d_out_file_name=${u3d_out_file_name:-"${u3d_prj_name}_${timestamp}.apk"}
@@ -62,7 +62,7 @@ server_enable_upload=${server_enable_upload:-true}
 cache_server_enable_upload=${server_endpoint:+"-cacheServerEnableUpload $server_enable_upload"}
 
 # -noUpm -quit -disable-gpu-skinning -nographics -job-worker-count 8
-unity_cmd_args="$adb2_enable $cache_server_enable $cache_server_endpoint $cache_server_namespace_prefix $cache_server_enable_download $cache_server_enable_upload -logFile $unity_log_file -buildTarget $u3d_build_target -batchmode -nographics"
+unity_cmd_args="$adb2_enable $cache_server_enable $cache_server_endpoint $cache_server_namespace_prefix $cache_server_enable_download $cache_server_enable_upload -logFile $unity_log_file $u3d_build_target -batchmode -nographics"
 unity_cmd="$unity_exe_file $unity_cmd_args"
 
 function args_print() {
