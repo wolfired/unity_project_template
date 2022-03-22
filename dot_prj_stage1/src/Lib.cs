@@ -231,9 +231,9 @@ namespace com.wolfired.dot_prj_stage1
     {
         public static void Test()
         {
-            Debug.Log(PlayerSettings.GetArchitecture(BuildTargetGroup.Standalone));
-            Debug.Log(EditorUserBuildSettings.selectedBuildTargetGroup);
-            Debug.Log(EditorUserBuildSettings.selectedStandaloneTarget);
+            Debug.Log(PlayerSettings.GetArchitecture(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)));
+            Debug.Log(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            Debug.Log(EditorUserBuildSettings.activeBuildTarget);
 
             if (Application.isBatchMode)
             {
