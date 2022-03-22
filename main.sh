@@ -406,7 +406,7 @@ if (( 0 != $step_upload )); then
         else
             echo "you need zip/7z to zip the $u3d_out_path"
         fi
-        scp_upload $name.zip 1 && rm $name.zip
+        scp_upload $name.zip 1
     else
         scp_upload $u3d_out_file
     fi
