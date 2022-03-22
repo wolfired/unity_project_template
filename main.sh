@@ -9,8 +9,8 @@ source $root_path/libunity.sh
 unity_exe_file=${unity_exe_file:-'/d/Unity.2021.2.0a21/Editor/Unity.exe'}
 unity_log_file=${unity_log_file:-'-'}
 
-refs4player=${refs4player:-"Mono.Options"}
-refs4editor=${refs4editor:-""}
+refs4player=${refs4player:-"Mono.Options"} # DLL_NAME0,DLL_NAME1
+refs4editor=${refs4editor:-""} # DLL_NAME0,DLL_NAME1
 
 u3d_prj_path=${u3d_prj_path:-"$root_path"}
 u3d_prj_name=${u3d_prj_name:-'u3d_prj'}
@@ -44,13 +44,29 @@ step_build_dotnet_prj=${step_build_dotnet_prj:-0}
 step_build_unity_prj=${step_build_unity_prj:-0}
 step_upload=${step_upload:-0}
 
-# -noUpm -quit -disable-gpu-skinning -nographics
-unity_cmd="$unity_exe_file -logFile $unity_log_file -batchmode -nographics"
+server_endpoint=${server_endpoint:-}
+adb2_enable=${server_endpoint:+"-adb2"}
+cache_server_enable=${server_endpoint:+"-enableCacheServer"}
+cache_server_endpoint=${server_endpoint:+"-cacheServerEndpoint $server_endpoint"}
+server_namespace_prefix=${server_namespace_prefix:-"$u3d_prj_name"}
+cache_server_namespace_prefix=${server_endpoint:+"-cacheServerNamespacePrefix $server_namespace_prefix"}
+server_enable_download=${server_enable_download:-true}
+cache_server_enable_download=${server_endpoint:+"-cacheServerEnableDownload $server_enable_download"}
+server_enable_upload=${server_enable_upload:-true}
+cache_server_enable_upload=${server_endpoint:+"-cacheServerEnableUpload $server_enable_upload"}
+
+# -noUpm -quit -disable-gpu-skinning -nographics -job-worker-count 8
+unity_cmd_args="$adb2_enable $cache_server_enable $cache_server_endpoint $cache_server_namespace_prefix $cache_server_enable_download $cache_server_enable_upload -logFile $unity_log_file -batchmode -nographics"
+unity_cmd="$unity_exe_file $unity_cmd_args"
 
 function args_print() {
     printf '%48s: %s\n' 'Project Root Path' $root_path
-    printf '%48s: %s\n' 'Unity Exe File' $unity_exe_file
-    printf '%48s: %s\n' 'Unity CMD' "$unity_cmd"
+    printf '%48s: %s\n' 'Unity CMD File' $unity_exe_file
+    printf '%48s: %s\n' 'Unity CMD Args' ''
+    IFS=' ' read -ra args <<< "$unity_cmd_args"
+    for arg in "${args[@]}"; do
+        printf '%48s  %s\n' '' $arg
+    done
     printf '%48s: %s\n' 'Unity Prj Name' $u3d_prj_name
     printf '%48s: %s\n' 'Unity Log File' $unity_log_file
     printf '%48s: %s\n' 'Unity Out Path' $u3d_out_path
@@ -177,7 +193,7 @@ function dot_prj_create() {
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_stage1
     if [[ 0 -eq $? ]]; then
-        DotProjectAddReference $dot_prj_path/$dot_prj_name_stage1 $dot_prj_path/refs4editor
+        DotProjectAddReference $dot_prj_path/$dot_prj_name_stage1 $dot_prj_path/$dot_prj_name_stage0
 
         u3dot_converter \
         --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp-Editor.csproj \
@@ -189,15 +205,12 @@ function dot_prj_create() {
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_editor
     if [[ 0 -eq $? ]]; then
-        DotProjectAddReference $dot_prj_path/$dot_prj_name_editor $dot_prj_path/$dot_prj_name_core
-
         readarray -td, arr_dot_prj_name_mod <<<"$dot_prj_name_mods,"
         unset 'arr_dot_prj_name_mod[-1]'
         for dot_prj_name in "${arr_dot_prj_name_mod[@]}"; do
             DotProjectAddReference $dot_prj_path/$dot_prj_name_editor $dot_prj_path/$dot_prj_name
         done
 
-        DotProjectAddReference $dot_prj_path/$dot_prj_name_editor $dot_prj_path/$dot_prj_name_stage0
         DotProjectAddReference $dot_prj_path/$dot_prj_name_editor $dot_prj_path/$dot_prj_name_stage1
 
         u3dot_converter \
@@ -233,6 +246,8 @@ function u3d_amend_dlls() {
 # Entrance
 
 args_print
+
+exit 0
 
 if (( 0 != $step_clean_clear )); then
     rm -rf $u3d_out_path

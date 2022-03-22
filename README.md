@@ -3,14 +3,6 @@ unity_project_template
 
 这是一个Unity项目模板
 
-# dot_prj_stage0
-
-只依赖`UnityEngine`, `UnityEditor`, 负责安装`Unity Package`
-
-# dot_prj_stage1
-
-依赖`UnityEngine`, `UnityEditor`
-
 # 用法
 
 * 编辑`main.sh`
@@ -41,6 +33,10 @@ dot_prj_name_core=dot_prj_core \
 dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
 dot_prj_name_editor=dot_prj_editor \
 unity_log_file=u3d_editor_`date +%Y%m%d_%H%M%S`.log \
+server_endpoint=192.168.180.25:10080 \
+server_namespace_prefix= \
+server_enable_download=true \
+server_enable_upload=true \
 step_env_prepare=0 \
 step_activate_unity=0 \
 step_create_unity_prj=1 \
@@ -49,7 +45,7 @@ step_install_unity_package=1 \
 step_create_dotnet_prj=1 \
 step_build_dotnet_prj=1 \
 step_build_unity_prj=1 \
-step_upload=0 \
+step_upload=1 \
 bash ./main.sh
 
 # Windows
@@ -58,6 +54,10 @@ dot_prj_name_core=dot_prj_core \
 dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
 dot_prj_name_editor=dot_prj_editor \
 unity_log_file=u3d_editor_`date +%Y%m%d_%H%M%S`.log \
+server_endpoint=192.168.180.25:10080 \
+server_namespace_prefix= \
+server_enable_download=true \
+server_enable_upload=true \
 step_env_prepare=0 \
 step_activate_unity=0 \
 step_create_unity_prj=0 \
@@ -75,6 +75,10 @@ dot_prj_name_core=dot_prj_core \
 dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
 dot_prj_name_editor=dot_prj_editor \
 unity_log_file=u3d_editor_`date +%Y%m%d_%H%M%S`.log \
+server_endpoint=192.168.180.25:10080 \
+server_namespace_prefix= \
+server_enable_download=true \
+server_enable_upload=true \
 step_env_prepare=1 \
 step_activate_unity=1 \
 step_create_unity_prj=1 \
