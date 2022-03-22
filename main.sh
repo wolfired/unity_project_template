@@ -6,19 +6,22 @@ root_path=$(dirname $root_full)
 source $root_path/libdot.sh
 source $root_path/libunity.sh
 
-timestamp=`date +%Y%m%d_%H%M%S`
+timestamp=${timestamp:-`date +%Y%m%d_%H%M%S`}
 
 unity_exe_file=${unity_exe_file:-'/d/Unity.2021.2.0a21/Editor/Unity.exe'}
-unity_log_file=${unity_log_file:-"u3d_editor_$timestamp.log"}
+unity_log_file=${unity_log_file:-"$timestamp.log"}
 
-refs4player=${refs4player:-"Mono.Options"} # DLL_NAME0,DLL_NAME1
-refs4editor=${refs4editor:-""} # DLL_NAME0,DLL_NAME1
+refs4player=${refs4player:-'Mono.Options'} # DLL_NAME0,DLL_NAME1
+refs4editor=${refs4editor:-''} # DLL_NAME0,DLL_NAME1
 
 u3d_prj_path=${u3d_prj_path:-"$root_path"}
 u3d_prj_name=${u3d_prj_name:-'u3d_prj'}
 
-u3d_out_file=${u3d_out_file:-"$root_path/out_u3d/${u3d_prj_name}_$timestamp.apk"}
-u3d_out_path=$(dirname $u3d_out_file)
+u3d_build_target=${u3d_build_target:-'Android'}
+
+u3d_out_path=${u3d_out_path:-"$root_path/out_u3d"}
+u3d_out_file_name=${u3d_out_file_name:-"${u3d_prj_name}_${timestamp}.apk"}
+u3d_out_file=${u3d_out_file:-"$u3d_out_path/$u3d_out_file_name"}
 
 u3d_prj_builder_script=${u3d_prj_builder_script:-'com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build'}
 
@@ -43,12 +46,13 @@ step_dotnet_refs=${step_dotnet_refs:-0}
 step_install_unity_package=${step_install_unity_package:-0}
 step_create_dotnet_prj=${step_create_dotnet_prj:-0}
 step_build_dotnet_prj=${step_build_dotnet_prj:-0}
+step_create_default_scene=${step_create_default_scene:-0}
 step_build_unity_prj=${step_build_unity_prj:-0}
 step_upload=${step_upload:-0}
 
 server_endpoint=${server_endpoint:-}
-adb2_enable=${server_endpoint:+"-adb2"}
-cache_server_enable=${server_endpoint:+"-enableCacheServer"}
+adb2_enable=${server_endpoint:+'-adb2'}
+cache_server_enable=${server_endpoint:+'-enableCacheServer'}
 cache_server_endpoint=${server_endpoint:+"-cacheServerEndpoint $server_endpoint"}
 server_namespace_prefix=${server_namespace_prefix:-"$u3d_prj_name"}
 cache_server_namespace_prefix=${server_endpoint:+"-cacheServerNamespacePrefix $server_namespace_prefix"}
@@ -58,7 +62,7 @@ server_enable_upload=${server_enable_upload:-true}
 cache_server_enable_upload=${server_endpoint:+"-cacheServerEnableUpload $server_enable_upload"}
 
 # -noUpm -quit -disable-gpu-skinning -nographics -job-worker-count 8
-unity_cmd_args="$adb2_enable $cache_server_enable $cache_server_endpoint $cache_server_namespace_prefix $cache_server_enable_download $cache_server_enable_upload -logFile $unity_log_file -batchmode -nographics"
+unity_cmd_args="$adb2_enable $cache_server_enable $cache_server_endpoint $cache_server_namespace_prefix $cache_server_enable_download $cache_server_enable_upload -logFile $unity_log_file -buildTarget $u3d_build_target -batchmode -nographics"
 unity_cmd="$unity_exe_file $unity_cmd_args"
 
 function args_print() {
@@ -381,14 +385,31 @@ if (( 0 != $step_build_dotnet_prj )); then
     u3d_amend_dlls
 fi
 
-if (( 0 != $step_build_unity_prj )); then
+if (( 0 != $step_create_default_scene )); then
     UnityExecuteMethod \
     $u3d_prj_path/$u3d_prj_name \
     com.wolfired.dot_prj_stage1.UnityEditorHelper.CreateDefaultScene
+fi
 
+if (( 0 != $step_build_unity_prj )); then
     u3d_prj_build
 fi
 
 if (( 0 != $step_upload )); then
-    scp_upload $u3d_out_file
+    name=${u3d_out_file_name%%.*}
+    suffix=${u3d_out_file_name##*.}
+    if [[ "exe" == $suffix ]]; then
+        if type "zip" &> /dev/null; then
+            zip -rj $name $u3d_out_path
+        elif type "7z" &> /dev/null; then
+            7z a -tzip $name $u3d_out_path/*
+        else
+            echo "you need zip/7z to zip the $u3d_out_path"
+        fi
+        if [[ -f $name.zip ]]; then
+            scp_upload $name.zip && rm $name.zip
+        fi
+    else
+        scp_upload $u3d_out_file
+    fi
 fi
