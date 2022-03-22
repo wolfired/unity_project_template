@@ -37,7 +37,7 @@ step_upload=0 \
 bash ./main.sh
 
 # Windows
-timestamp:-`date +%Y%m%d_%H%M%S` \
+timestamp=`date +%Y%m%d_%H%M%S` \
 unity_exe_file=/d/Unity.2021.2.0a21/Editor/Unity.exe \
 dot_prj_name_core=dot_prj_core \
 dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
@@ -64,7 +64,7 @@ step_upload=0 \
 bash ./main.sh
 
 # Ubuntu
-timestamp:-`date +%Y%m%d_%H%M%S` \
+timestamp=`date +%Y%m%d_%H%M%S` \
 unity_exe_file=/usr/bin/unity-editor \
 dot_prj_name_core=dot_prj_core \
 dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
