@@ -132,7 +132,7 @@ services:
       export https_proxy=http://192.168.73.39:1080
       sed -i "s@http://.*archive.ubuntu.com@http://repo.huaweicloud.com@g" /etc/apt/sources.list
       sed -i "s@http://.*security.ubuntu.com@http://repo.huaweicloud.com@g" /etc/apt/sources.list
-      apt-get update && apt-get -y install language-pack-en software-properties-common apt-transport-https subversion cifs-utils zip unzip tzdata
+      apt-get update && apt-get -y install language-pack-en software-properties-common apt-transport-https subversion cifs-utils p7zip-full tzdata
       locale-gen en_US.UTF-8
       ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
       wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
@@ -171,7 +171,7 @@ services:
       export https_proxy=http://192.168.73.39:1080
       sed -i "s@http://.*archive.ubuntu.com@http://repo.huaweicloud.com@g" /etc/apt/sources.list
       sed -i "s@http://.*security.ubuntu.com@http://repo.huaweicloud.com@g" /etc/apt/sources.list
-      apt-get update && apt-get -y install language-pack-en software-properties-common apt-transport-https subversion cifs-utils zip unzip tzdata default-jre
+      apt-get update && apt-get -y install language-pack-en software-properties-common apt-transport-https subversion cifs-utils p7zip-full tzdata default-jre
       locale-gen en_US.UTF-8
       ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
       wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -

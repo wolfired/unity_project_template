@@ -402,12 +402,10 @@ if (( 0 != $step_upload )); then
     name=${u3d_out_file_name%%.*}
     suffix=${u3d_out_file_name##*.}
     if [[ "exe" == $suffix ]]; then
-        if type "zip" &> /dev/null; then
-            zip -Dr $name $u3d_out_path
-        elif type "7z" &> /dev/null; then
+        if type "7z" &> /dev/null; then
             7z a -tzip $name $u3d_out_path/*
         else
-            echo "you need zip/7z to zip the $u3d_out_path"
+            echo "you need 7z to zip the $u3d_out_path"
         fi
         scp_upload $name.zip 1
     else
