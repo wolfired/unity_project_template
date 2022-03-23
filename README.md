@@ -147,7 +147,7 @@ services:
       unset http_proxy
       unset https_proxy
       wget http://jenkins.builder.com/jnlpJars/agent.jar
-      java -jar agent.jar -jnlpUrl http://jenkins.builder.com/computer/unity_2019_4_36f1_android_0_17/slave-agent.jnlp -secret 8a5d9e76b26f9627c6f107d2e2a47aaeebc8fe1b7ab7b32ed7a698cab3655687 -workDir /gameci/unity_2019_4_36f1_android_0_17
+      java -jar agent.jar -jnlpUrl http://jenkins.builder.com/computer/xen_unity_2019_4_36f1_android_0_17/slave-agent.jnlp -secret d86f1e1424106821d64f422d4aa8c3d8e1398e52c56b69ea6344a7c508e252ac -workDir /gameci/unity_2019_4_36f1_android_0_17
 
   unity_2019_4_36f1_windows_mono_0_17_2:
     container_name: unity_2019_4_36f1_windows_mono_0_17_2
