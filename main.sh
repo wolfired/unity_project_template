@@ -102,6 +102,9 @@ function scp_upload() {
     scp -o StrictHostKeyChecking=no -P 2222 -i ./$scp_id_file $upload_file hd@ssh.mac.com:/Users/hd/nginx/html/share/ && \
     rm -f $scp_id_file && \
     if (( 0 != $upload_then_delete )); then rm -f $upload_file; fi
+
+    local name=$(filename $upload_file)
+    echo "<a href='$web_share_url/$name'>Down $name<>"
 }
 
 function env_prepare() {
