@@ -111,17 +111,17 @@ bash ./main.sh
 version: "3"
 
 services:
-  unity:
-    container_name: unity
+  unity_2019_4_36f1_android_0_17:
+    container_name: unity_2019_4_36f1_android_0_17
     image: unityci/editor:ubuntu-2019.4.36f1-android-0.17
     restart: always
     volumes:
-    - /home/link/workspace_labs/gameci:/gameci
+    - /data/workspace_labs/gameci:/gameci
     dns:
     - 192.168.180.25
     networks:
       default:
-        ipv4_address: 192.168.1.8
+        ipv4_address: 192.168.1.88
     privileged: true
     command:
     - bash 
@@ -132,7 +132,7 @@ services:
       export https_proxy=http://192.168.73.39:1080
       sed -i "s@http://.*archive.ubuntu.com@http://repo.huaweicloud.com@g" /etc/apt/sources.list
       sed -i "s@http://.*security.ubuntu.com@http://repo.huaweicloud.com@g" /etc/apt/sources.list
-      apt-get update && apt-get -y install language-pack-en software-properties-common apt-transport-https subversion cifs-utils
+      apt-get update && apt-get -y install language-pack-en software-properties-common apt-transport-https subversion cifs-utils zip unzip
       locale-gen en_US.UTF-8
       wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
       add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
@@ -146,7 +146,45 @@ services:
       unset http_proxy
       unset https_proxy
       wget http://jenkins.builder.com/jnlpJars/agent.jar
-      java -jar agent.jar -jnlpUrl http://jenkins.builder.com/computer/xen/slave-agent.jnlp -secret df4ca69bedaf48f744fc419bcd327edb6774264841cff931712da0c5366a4995 -workDir /gameci
+      java -jar agent.jar -jnlpUrl http://jenkins.builder.com/computer/unity_2019_4_36f1_android_0_17/slave-agent.jnlp -secret 8a5d9e76b26f9627c6f107d2e2a47aaeebc8fe1b7ab7b32ed7a698cab3655687 -workDir /gameci/unity_2019_4_36f1_android_0_17
+
+  unity_2019_4_36f1_windows_mono_0_17_2:
+    container_name: unity_2019_4_36f1_windows_mono_0_17_2
+    image: unityci/editor:ubuntu-2019.4.36f1-windows-mono-0.17.2
+    restart: always
+    volumes:
+    - /data/workspace_labs/gameci:/gameci
+    dns:
+    - 192.168.180.25
+    networks:
+      default:
+        ipv4_address: 192.168.1.99
+    privileged: true
+    command:
+    - bash 
+    - -c 
+    - |
+      unity-editor -quit -batchmode -logfile - -manualLicenseFile /gameci/Unity_v2019.x.ulf
+      chmod 777 /tmp
+      export http_proxy=http://192.168.73.39:1080
+      export https_proxy=http://192.168.73.39:1080
+      sed -i "s@http://.*archive.ubuntu.com@http://repo.huaweicloud.com@g" /etc/apt/sources.list
+      sed -i "s@http://.*security.ubuntu.com@http://repo.huaweicloud.com@g" /etc/apt/sources.list
+      apt-get update && apt-get -y install language-pack-en software-properties-common apt-transport-https subversion cifs-utils zip unzip
+      locale-gen en_US.UTF-8
+      wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | apt-key add -
+      add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+      apt install -y code
+      echo 'export VSCODE_CMD=/usr/bin/code' >> /root/.bashrc
+      wget https://dot.net/v1/dotnet-install.sh && chmod 755 ./dotnet-install.sh && ./dotnet-install.sh --channel 5.0 && rm -rf ./dotnet-install.sh
+      echo 'export DOTNET_ROOT=/root/.dotnet' >> /root/.bashrc
+      echo 'export PATH=$$PATH:$$DOTNET_ROOT:$$DOTNET_ROOT/tools' >> /root/.bashrc
+      source /root/.bashrc
+      dotnet tool install -g wolfired.u3dot_converter
+      unset http_proxy
+      unset https_proxy
+      wget http://jenkins.builder.com/jnlpJars/agent.jar
+      java -jar agent.jar -jnlpUrl http://jenkins.builder.com/computer/xen_unity_2019_4_36f1_windows_mono_0_17_2/slave-agent.jnlp -secret 66730e037b2250e19b06ce62d652a459fe9b3388121fdcee5050ad9ffa10a842 -workDir /gameci/unity_2019_4_36f1_windows_mono_0_17_2
 
 
 networks:
