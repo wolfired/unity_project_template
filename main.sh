@@ -400,7 +400,7 @@ if (( 0 != $step_upload )); then
     suffix=${u3d_out_file_name##*.}
     if [[ "exe" == $suffix ]]; then
         if type "zip" &> /dev/null; then
-            zip -rj $name $u3d_out_path
+            zip -r $name $u3d_out_path/*
         elif type "7z" &> /dev/null; then
             7z a -tzip $name $u3d_out_path/*
         else
