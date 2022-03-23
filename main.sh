@@ -103,8 +103,8 @@ function scp_upload() {
     rm -f $scp_id_file && \
     if (( 0 != $upload_then_delete )); then rm -f $upload_file; fi
 
-    local name=$(filename $upload_file)
-    echo "<a href='$web_share_url/$name'>Down $name<>"
+    local name=$(basename $upload_file)
+    echo "<a href='$web_share_url/$name'>Down $name</a>"
 }
 
 function env_prepare() {
