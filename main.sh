@@ -104,7 +104,7 @@ function scp_upload() {
     if (( 0 != $upload_then_delete )); then rm -f $upload_file; fi
 
     local name=$(basename $upload_file)
-    echo "<a href='$web_share_url/$name'>Down $name</a>"
+    echo "Download: $web_share_url/$name"
 }
 
 function env_prepare() {
@@ -403,7 +403,7 @@ if (( 0 != $step_upload )); then
     suffix=${u3d_out_file_name##*.}
     if [[ "exe" == $suffix ]]; then
         if type "zip" &> /dev/null; then
-            zip -r $name $u3d_out_path/*
+            zip -rj $name $u3d_out_path
         elif type "7z" &> /dev/null; then
             7z a -tzip $name $u3d_out_path/*
         else
