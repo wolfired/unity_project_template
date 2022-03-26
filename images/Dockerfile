@@ -102,9 +102,9 @@ RUN export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn \
 # Install Deps: ...
 RUN mkdir -p /opt/unity/editors \
     && unity-hub ip -s /opt/unity/editors \
-    && unity-hub i -v 2021.2.17f1 -c efb8f635e7b1 \
-    && unity-hub im -v 2021.2.17f1 -m windows-mono --cm \
-    && unity-hub im -v 2021.2.17f1 -m android --cm \
+    && unity-hub i -v 2021.2.17f1 -c efb8f635e7b1 | tee /var/log/install-editor.log \
+    && unity-hub im -v 2021.2.17f1 -m windows-mono --cm | tee /var/log/install-module-windows-mono.log \
+    && unity-hub im -v 2021.2.17f1 -m android --cm | tee /var/log/install-module-android.log \
     && chmod -R 755 /opt/unity/editors/2021.2.17f1/Editor/Data/PlaybackEngines \
     && mv /opt/unity/editors/2021.2.17f1/* /opt/unity/ \
     && echo 'xvfb-run -ae /dev/stdout /opt/unity/Editor/Unity $@' > /usr/bin/unity-editor \
