@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  dockerunity:
+    container_name: dockerunity
+    image: dockerunity:v0
+    restart: always
+    volumes:
+    - /data/workspace_labs/gameci:/gameci
+    dns:
+    - 192.168.180.25
+    networks:
+      default:
+        ipv4_address: 192.168.1.77
+
+
+networks:
+  default:
+    external: true
+    name: lanet
