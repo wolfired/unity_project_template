@@ -212,3 +212,7 @@ sudo docker exec -it 容器ID bash
 unity-editor -quit -batchmode -logfile - -manualLicenseFile 授权文件
 
 ```
+
+# 引用
+
+https://forum.unity.com/threads/add-an-option-to-auto-update-packages.730628/
