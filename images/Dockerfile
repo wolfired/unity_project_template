@@ -115,31 +115,32 @@ RUN mkdir -p $UNITY_PATH/editors \
 
 RUN unity-hub im -v $u3d_version -m windows-mono --cm | tee /var/log/install-module-windows-mono.log
 
-RUN unity-hub im -v $u3d_version -m android --cm | tee /var/log/install-module-android.log \
-    && export RAW_ANDROID_SDK_ROOT=$(jq -cr '(.[] | select(.id == "android-sdk-platform-tools")).destination' $UNITY_PATH/modules.json) \
-    && export ESCAPED_UNITY_PATH=$(printf '%s' "$UNITY_PATH" | sed 's/[#\/]/\\\0/g') \
-    && export ANDROID_SDK_ROOT=$(echo $RAW_ANDROID_SDK_ROOT | sed -e "s/{UNITY_PATH}/$ESCAPED_UNITY_PATH/g") \
-    && export ANDROID_HOME=${ANDROID_SDK_ROOT} \
-    && export RAW_ANDROID_NDK_ROOT=$(jq -cr '(.[] | select(.id == "android-ndk")).destination' $UNITY_PATH/modules.json) \
-    && export ANDROID_NDK_HOME=$(echo $RAW_ANDROID_NDK_ROOT | sed -e "s/{UNITY_PATH}/$ESCAPED_UNITY_PATH/g") \
-    && export RAW_JAVA_HOME=$(jq -cr '(.[] | select(.id == "android-open-jdk")).destination' $UNITY_PATH/modules.json) \
-    && export ESCAPED_JAVA_HOME=$(echo $RAW_JAVA_HOME | sed -e "s/{UNITY_PATH}/$ESCAPED_UNITY_PATH/g") \
-    && export JAVA_HOME=${ESCAPED_JAVA_HOME:-$UNITY_PATH/Editor/Data/PlaybackEngines/AndroidPlayer/Tools/OpenJDK/Linux} \
-    && yes | "${ANDROID_HOME}/tools/bin/sdkmanager" --licenses \
-    && "${ANDROID_HOME}/tools/bin/sdkmanager" --list >> "${ANDROID_HOME}/tools/bin/sdkversion.txt" \
-    && sed -i '2s/^/exit 0\n/' "${ANDROID_HOME}/tools/bin/sdkmanager" \
-    && sed -i '2s/^/cat ${ANDROID_HOME}\/tools\/bin\/sdkversion.txt\n/' "${ANDROID_HOME}/tools/bin/sdkmanager" \
-    && sed -i 's/google()/maven { url "https:\/\/maven.aliyun.com\/repository\/jcenter" }\n\tmaven { url "https:\/\/maven.aliyun.com\/repository\/google" }/' \
-               $UNITY_PATH/Editor/Data/PlaybackEngines/AndroidPlayer/Tools/GradleTemplates/baseProjectTemplate.gradle \
-    && sed -i 's/jcenter()/maven { url "https:\/\/maven.aliyun.com\/repository\/central" }\n\tmaven { url "https:\/\/maven.aliyun.com\/repository\/gradle-plugin" }\n/' \
-               $UNITY_PATH/Editor/Data/PlaybackEngines/AndroidPlayer/Tools/GradleTemplates/baseProjectTemplate.gradle \
-    && echo "export ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT}" >> /root/.bashrc \
-    && echo "export ANDROID_HOME=${ANDROID_HOME}" >> /root/.bashrc \
-    && echo "export ANDROID_NDK_HOME=${ANDROID_NDK_HOME}" >> /root/.bashrc \
-    && echo "export JAVA_HOME=${JAVA_HOME}" >> /root/.bashrc \
-    && echo "export PATH=${PATH}:${JAVA_HOME}/bin:${ANDROID_SDK_ROOT}/tools:${ANDROID_SDK_ROOT}/tools/bin:${ANDROID_SDK_ROOT}/platform-tools" >> /root/.bashrc
+RUN unity-hub im -v $u3d_version -m android --cm | tee /var/log/install-module-android.log
 
 RUN chmod -R 755 $UNITY_PATH/editors/$u3d_version/Editor/Data/PlaybackEngines \
     && mv $UNITY_PATH/editors/$u3d_version/* $UNITY_PATH/ \
     && echo 'xvfb-run -ae /dev/stdout $UNITY_PATH/Editor/Unity $@' > /usr/bin/unity-editor \
     && chmod 755 /usr/bin/unity-editor
+
+RUN export RAW_ANDROID_SDK_ROOT=$(jq -cr '(.[] | select(.id == "android-sdk-platform-tools")).destination' $UNITY_PATH/modules.json) \
+    && export ESCAPED_UNITY_PATH=$(printf '%s' "$UNITY_PATH" | sed 's/[#\/]/\\\0/g') \
+    && export ANDROID_SDK_ROOT=$(echo $RAW_ANDROID_SDK_ROOT | sed -e "s/{UNITY_PATH}/$ESCAPED_UNITY_PATH/g") \
+    && export ANDROID_HOME=$ANDROID_SDK_ROOT \
+    && export RAW_ANDROID_NDK_ROOT=$(jq -cr '(.[] | select(.id == "android-ndk")).destination' $UNITY_PATH/modules.json) \
+    && export ANDROID_NDK_HOME=$(echo $RAW_ANDROID_NDK_ROOT | sed -e "s/{UNITY_PATH}/$ESCAPED_UNITY_PATH/g") \
+    && export RAW_JAVA_HOME=$(jq -cr '(.[] | select(.id == "android-open-jdk")).destination' $UNITY_PATH/modules.json) \
+    && export ESCAPED_JAVA_HOME=$(echo $RAW_JAVA_HOME | sed -e "s/{UNITY_PATH}/$ESCAPED_UNITY_PATH/g") \
+    && export JAVA_HOME=${ESCAPED_JAVA_HOME:-$UNITY_PATH/Editor/Data/PlaybackEngines/AndroidPlayer/Tools/OpenJDK/Linux} \
+    && yes | "$ANDROID_HOME/tools/bin/sdkmanager" --licenses \
+    && "$ANDROID_HOME/tools/bin/sdkmanager" --list >> "$ANDROID_HOME/tools/bin/sdkversion.txt" \
+    && sed -i '2s/^/exit 0\n/' "$ANDROID_HOME/tools/bin/sdkmanager" \
+    && sed -i '2s/^/cat $ANDROID_HOME\/tools\/bin\/sdkversion.txt\n/' "$ANDROID_HOME/tools/bin/sdkmanager" \
+    && sed -i 's/google()/maven { url "https:\/\/maven.aliyun.com\/repository\/jcenter" }\n\tmaven { url "https:\/\/maven.aliyun.com\/repository\/google" }/' \
+               $UNITY_PATH/Editor/Data/PlaybackEngines/AndroidPlayer/Tools/GradleTemplates/baseProjectTemplate.gradle \
+    && sed -i 's/jcenter()/maven { url "https:\/\/maven.aliyun.com\/repository\/central" }\n\tmaven { url "https:\/\/maven.aliyun.com\/repository\/gradle-plugin" }\n/' \
+               $UNITY_PATH/Editor/Data/PlaybackEngines/AndroidPlayer/Tools/GradleTemplates/baseProjectTemplate.gradle \
+    && echo "export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> /root/.bashrc \
+    && echo "export ANDROID_HOME=$ANDROID_HOME" >> /root/.bashrc \
+    && echo "export ANDROID_NDK_HOME=$ANDROID_NDK_HOME" >> /root/.bashrc \
+    && echo "export JAVA_HOME=$JAVA_HOME" >> /root/.bashrc \
+    && echo "export PATH=\$PATH:\$JAVA_HOME/bin:\$ANDROID_SDK_ROOT/tools:\$ANDROID_SDK_ROOT/tools/bin:\$ANDROID_SDK_ROOT/platform-tools" >> /root/.bashrc
