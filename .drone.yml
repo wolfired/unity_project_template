@@ -2,6 +2,9 @@ kind: pipeline
 type: exec
 name: default
 
+node:
+  exe: exe
+
 clone:
   disable: true
 
@@ -10,3 +13,4 @@ steps:
   commands:
   - pwd
   - ls /
+
