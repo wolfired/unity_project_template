@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEditor;
 using Unity.CodeEditor;
 using UnityEditor.SceneManagement;
+using com.wolfired.dot_prj_stage0;
 
 namespace com.wolfired.dot_prj_stage1
 {
@@ -18,10 +19,7 @@ namespace com.wolfired.dot_prj_stage1
         {
             CodeEditor.CurrentEditor.SyncAll();
 
-            if (Application.isBatchMode)
-            {
-                EditorApplication.Exit(0);
-            }
+            U3DEditorUtils.Exit(0);
         }
     }
 
@@ -154,10 +152,7 @@ namespace com.wolfired.dot_prj_stage1
             }
             Debug.Log(prefs_key_vscode_args + " = " + prefs_val_vscode_args);
 
-            if (Application.isBatchMode)
-            {
-                EditorApplication.Exit(exit_code);
-            }
+            U3DEditorUtils.Exit(exit_code);
         }
 
         public static void CreateDefaultScene()
@@ -176,10 +171,7 @@ namespace com.wolfired.dot_prj_stage1
                 Debug.Log("Default Scene exits: " + list.Length);
             }
 
-            if (Application.isBatchMode)
-            {
-                EditorApplication.Exit(0);
-            }
+            U3DEditorUtils.Exit(0);
         }
     }
 
@@ -203,10 +195,7 @@ namespace com.wolfired.dot_prj_stage1
 
             BuildPipeline.BuildPlayer(buildPlayerOptions);
 
-            if (Application.isBatchMode)
-            {
-                EditorApplication.Exit(0);
-            }
+            U3DEditorUtils.Exit(0);
         }
     }
 
@@ -220,6 +209,10 @@ namespace com.wolfired.dot_prj_stage1
                 };
             optionSet.Parse(System.Environment.GetCommandLineArgs());
 
+            // PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
+            // PlayerSettings.defaultScreenWidth = 1024;
+            // PlayerSettings.defaultScreenHeight = 768;
+
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
             buildPlayerOptions.scenes = new[] { "Assets/Default.unity" };
             buildPlayerOptions.locationPathName = outfile;
@@ -228,10 +221,7 @@ namespace com.wolfired.dot_prj_stage1
 
             BuildPipeline.BuildPlayer(buildPlayerOptions);
 
-            if (Application.isBatchMode)
-            {
-                EditorApplication.Exit(0);
-            }
+            U3DEditorUtils.Exit(0);
         }
     }
 
@@ -245,10 +235,7 @@ namespace com.wolfired.dot_prj_stage1
             Debug.Log(BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows));
             Debug.Log(BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64));
 
-            if (Application.isBatchMode)
-            {
-                EditorApplication.Exit(0);
-            }
+            U3DEditorUtils.Exit(0);
         }
     }
 }

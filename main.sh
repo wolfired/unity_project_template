@@ -357,7 +357,7 @@ if (( 0 != $step_install_unity_package )); then
 
     UnityExecuteMethod \
     $u3d_prj_path/$u3d_prj_name \
-    com.wolfired.dot_prj_stage0.UnityPackageHelper.Install --uph_i_args_package_id com.unity.ide.vscode
+    com.wolfired.dot_prj_stage0.U3DPackageUtils.Install --uph_i_args_package_id com.unity.ide.vscode
 
     if [[ ! -f $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_stage1.dll ]]; then
         mkdir -p $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage1
@@ -374,8 +374,8 @@ if (( 0 != $step_install_unity_package )); then
     $u3d_prj_path/$u3d_prj_name \
     com.wolfired.dot_prj_stage1.CodeEditorHelper.GenU3DProjectFiles
 
-    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage0
-    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage1
+    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage0*
+    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage1*
 fi
 
 if (( 0 != $step_create_dotnet_prj )); then

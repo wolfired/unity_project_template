@@ -9,7 +9,34 @@ unity_project_template
 
 ```bash
 
-# Windows
+# Windows build exe
+timestamp=`date +%Y%m%d_%H%M%S` \
+unity_exe_file=/d/Unity.2019.4.6f1/Editor/Unity.exe \
+dot_prj_name_core=dot_prj_core \
+dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
+dot_prj_name_editor=dot_prj_editor \
+unity_log_file= \
+u3d_prj_name=u3d_prj \
+u3d_build_target=Win64 \
+u3d_out_file_name=${u3d_prj_name}_${timestamp}.exe \
+u3d_prj_builder_script=com.wolfired.dot_prj_stage1.DefaultWindowsBuilder.Build \
+server_endpoint=192.168.180.25:10080 \
+server_namespace_prefix= \
+server_enable_download=true \
+server_enable_upload=true \
+step_env_prepare=0 \
+step_activate_unity=0 \
+step_create_unity_prj=0 \
+step_dotnet_refs=0 \
+step_install_unity_package=0 \
+step_create_dotnet_prj=0 \
+step_build_dotnet_prj=0 \
+step_create_default_scene=0 \
+step_build_unity_prj=0 \
+step_upload=0 \
+bash ./main.sh
+
+# Windows build apk
 timestamp=`date +%Y%m%d_%H%M%S` \
 unity_exe_file=/d/Unity.2019.4.6f1/Editor/Unity.exe \
 dot_prj_name_core=dot_prj_core \
@@ -18,8 +45,35 @@ dot_prj_name_editor=dot_prj_editor \
 unity_log_file= \
 u3d_prj_name=u3d_prj \
 u3d_build_target=Android \
-u3d_out_file_name=${u3d_prj_name}_${timestamp}.exe \
+u3d_out_file_name=${u3d_prj_name}_${timestamp}.apk \
 u3d_prj_builder_script=com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build \
+server_endpoint=192.168.180.25:10080 \
+server_namespace_prefix= \
+server_enable_download=true \
+server_enable_upload=true \
+step_env_prepare=0 \
+step_activate_unity=0 \
+step_create_unity_prj=0 \
+step_dotnet_refs=0 \
+step_install_unity_package=0 \
+step_create_dotnet_prj=0 \
+step_build_dotnet_prj=0 \
+step_create_default_scene=0 \
+step_build_unity_prj=0 \
+step_upload=0 \
+bash ./main.sh
+
+# Windows build testbed
+timestamp=`date +%Y%m%d_%H%M%S` \
+unity_exe_file=/d/Unity.2019.4.6f1/Editor/Unity.exe \
+dot_prj_name_core=dot_prj_core \
+dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
+dot_prj_name_editor=dot_prj_editor \
+unity_log_file= \
+u3d_prj_name=u3d_prj \
+u3d_build_target=Win64 \
+u3d_out_file_name=${u3d_prj_name}_${timestamp}.apk \
+u3d_prj_builder_script=com.wolfired.dot_prj_stage1.Testbed.Test \
 server_endpoint=192.168.180.25:10080 \
 server_namespace_prefix= \
 server_enable_download=true \
@@ -93,7 +147,7 @@ bash ./main.sh
 dot_prj_name_core=dot_prj_core \
 dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
 dot_prj_name_editor=dot_prj_editor \
-step_clean_clear=0 \
+step_clean_clear=1 \
 bash ./main.sh
 
 ```
