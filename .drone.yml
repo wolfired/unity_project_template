@@ -12,6 +12,7 @@ steps:
 - name: clone
   commands:
   - bash -c 'if [[ -d /gameci/drone/unity_project_template ]]; then git -C /gameci/drone/unity_project_template pull; else git clone https://github.com/wolfired/unity_project_template.git /gameci/drone/unity_project_template; fi'
+  - echo $PATH
 
 - name: build
   commands:
