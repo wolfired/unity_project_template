@@ -11,7 +11,8 @@
 /u3d_prj/.vscode/
 /u3d_prj/Library/
 /u3d_prj/Logs/
-/u3d_prj/**/Plugins/
+/u3d_prj/**/Plugins/*
+!/u3d_prj/**/Plugins/.gitkeep
 /u3d_prj/*.csproj
 /u3d_prj/*.sln
 
