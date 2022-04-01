@@ -209,9 +209,12 @@ namespace com.wolfired.dot_prj_stage1
                 };
             optionSet.Parse(System.Environment.GetCommandLineArgs());
 
-            // PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
-            // PlayerSettings.defaultScreenWidth = 1024;
-            // PlayerSettings.defaultScreenHeight = 768;
+            PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
+            PlayerSettings.defaultScreenWidth = 1024;
+            PlayerSettings.defaultScreenHeight = 768;
+
+            PlayerSettings.companyName = "wolfired";
+            PlayerSettings.productName = "winwin";
 
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
             buildPlayerOptions.scenes = new[] { "Assets/Default.unity" };
@@ -229,11 +232,20 @@ namespace com.wolfired.dot_prj_stage1
     {
         public static void Test()
         {
-            Debug.Log(PlayerSettings.GetArchitecture(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget)));
-            Debug.Log(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget));
+            var target_group = BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget);
+
+            Debug.Log(PlayerSettings.GetArchitecture(target_group));
+            Debug.Log(target_group);
             Debug.Log(EditorUserBuildSettings.activeBuildTarget);
             Debug.Log(BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows));
             Debug.Log(BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64));
+
+            Debug.Log(PlayerSettings.GetScriptingBackend(target_group));
+            Debug.Log(PlayerSettings.GetApiCompatibilityLevel(target_group));
+
+            Debug.Log(PlayerSettings.companyName);
+            Debug.Log(PlayerSettings.productName);
+            Debug.Log(PlayerSettings.productGUID);
 
             U3DEditorUtils.Exit(0);
         }
