@@ -2,11 +2,11 @@ kind: pipeline
 type: exec
 name: default
 
-environment:
-  http_proxy: http://192.168.73.39:1080
-  https_proxy: http://192.168.73.39:1080
-  HTTP_PROXY: http://192.168.73.39:1080
-  HTTPS_PROXY: http://192.168.73.39:1080
+# environment:
+#   http_proxy: http://192.168.73.39:1080
+#   https_proxy: http://192.168.73.39:1080
+#   HTTP_PROXY: http://192.168.73.39:1080
+#   HTTPS_PROXY: http://192.168.73.39:1080
 
 node:
   exe: exe
