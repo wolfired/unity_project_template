@@ -11,6 +11,6 @@ clone:
 steps:
 - name: clone
   commands:
-  - pwd
-  - ls /
+  - git clone https://github.com/wolfired/unity_project_template.git /gameci/drone/unity_project_template
+
 
