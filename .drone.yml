@@ -17,8 +17,8 @@ clone:
 steps:
 - name: clone
   commands:
-  - bash -ic 'source /root/.bashrc; echo $UNITY_PATH; if [[ -d /gameci/drone/unity_project_template ]]; then git -C /gameci/drone/unity_project_template pull; else git clone https://github.com/wolfired/unity_project_template.git /gameci/drone/unity_project_template; fi'
+  - bash -ic 'source /root/.bashrc; export UNITY_PATH=/opt/unity; if [[ -d /gameci/drone/unity_project_template ]]; then git -C /gameci/drone/unity_project_template pull; else git clone https://github.com/wolfired/unity_project_template.git /gameci/drone/unity_project_template; fi'
 
 - name: build
   commands:
-  - bash -ic 'source /root/.bashrc; echo $UNITY_PATH'
+  - bash -ic 'source /root/.bashrc; export UNITY_PATH=/opt/unity'
