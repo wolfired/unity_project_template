@@ -10,7 +10,9 @@ clone:
 
 steps:
 - name: clone
-  commands:
-  - git clone https://github.com/wolfired/unity_project_template.git /gameci/drone/unity_project_template
-
-
+  commands: '''|
+  if [[ -d /gameci/drone/unity_project_template ]]; then
+    git -C /gameci/drone/unity_project_template push
+  else
+    git clone https://github.com/wolfired/unity_project_template.git /gameci/drone/unity_project_template
+  fi'''
