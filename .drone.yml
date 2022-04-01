@@ -3,10 +3,10 @@ type: exec
 name: default
 
 environment:
-  http_proxy: http://192.168.73.39:1080
-  https_proxy: http://192.168.73.39:1080
-  HTTP_PROXY: http://192.168.73.39:1080
-  HTTPS_PROXY: http://192.168.73.39:1080
+  # http_proxy: http://192.168.73.39:1080
+  # https_proxy: http://192.168.73.39:1080
+  # HTTP_PROXY: http://192.168.73.39:1080
+  # HTTPS_PROXY: http://192.168.73.39:1080
 
 node:
   exe: exe
@@ -17,7 +17,6 @@ clone:
 steps:
 - name: clone
   commands:
-  - bash -ic 'echo $PATH'
   - bash -ic 'if [[ -d /gameci/drone/unity_project_template ]]; then git -C /gameci/drone/unity_project_template pull; else git clone https://github.com/wolfired/unity_project_template.git /gameci/drone/unity_project_template; fi'
 
 - name: build
