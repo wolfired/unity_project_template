@@ -268,10 +268,15 @@ unity-editor -quit -batchmode -logfile - -manualLicenseFile 授权文件
 ssh -p 9022 link@192.168.100.168 -t htop
 
 java -jar jenkins-cli.jar -s http://192.168.180.25:58080/ -webSocket -auth admin:admin build tmp_exe -w -s -v \
-| tee tmp_exe.log | curl $(grep -oP '(?<=Download:\s)https://.+?\.zip$') -sO
+| tee tmp_exe.log \
+&& cat tmp_exe.log | curl $(grep -oP '(?<=Download:\s)https://.+?\.zip$') -sO \
+&& filename=`ls tmp_*.zip | sort -r | head -n 1` \
+&& 7z x -o${filename%.*} $filename
 
 java -jar jenkins-cli.jar -s http://192.168.180.25:58080/ -webSocket -auth admin:admin build tmp_apk -w -s -v \
-| tee tmp_apk.log | curl $(grep -oP '(?<=Download:\s)https://.+?\.apk$') -sO && adb install `ls *.apk | sort -r | head -n 1`
+| tee tmp_apk.log \
+&& cat tmp_apk.log | curl $(grep -oP '(?<=Download:\s)https://.+?\.apk$') -sO \
+&& adb install `ls tmp_*.apk | sort -r | head -n 1`
 
 ```
 
