@@ -39,6 +39,7 @@ namespace com.wolfired.dot_prj_editor
                     {
                         go.AddComponent<Booter>();
 
+                        EditorSceneManager.SaveOpenScenes();
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
                     }
