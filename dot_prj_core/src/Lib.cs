@@ -10,6 +10,9 @@ namespace com.wolfired.dot_prj_core
         public void OnEnable()
         {
             Debug.Log("Booter");
+            Debug.Log(Application.dataPath);
+            Debug.Log(Application.streamingAssetsPath);
+            Debug.Log(Application.persistentDataPath);
         }
 
         public void Update()
