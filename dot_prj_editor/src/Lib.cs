@@ -22,14 +22,14 @@ namespace com.wolfired.dot_prj_editor
 
             AssemblyReloadEvents.afterAssemblyReload += () =>
             {
-                Debug.Log("AssemblyReloadEvents.afterAssemblyReload");
+                Debug.Log("AssemblyReloadEvents.afterAssemblyReloadd");
 
-                var ss = new[] { new SceneSetup() };
-                ss[0].isLoaded = true;
-                ss[0].isActive = true;
-                ss[0].isSubScene = false;
-                ss[0].path = "Assets/Default.unity";
-                EditorSceneManager.RestoreSceneManagerSetup(ss);
+                // var ss = new[] { new SceneSetup() };
+                // ss[0].isLoaded = true;
+                // ss[0].isActive = true;
+                // ss[0].isSubScene = false;
+                // ss[0].path = "Assets/Default.unity";
+                // EditorSceneManager.RestoreSceneManagerSetup(ss);
 
                 var go = GameObject.Find("Main Camera");
                 if (null != go)
