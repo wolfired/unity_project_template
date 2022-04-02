@@ -17,6 +17,8 @@ namespace com.wolfired.dot_prj_core
 
         public void Update()
         {
+            var Cube = GameObject.Find("Cube");
+            Cube.transform.localScale -= new Vector3(0.01f, 0.01f, 0.01f);
         }
     }
 }
