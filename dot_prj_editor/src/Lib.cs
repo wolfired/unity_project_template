@@ -38,28 +38,4 @@ namespace com.wolfired.dot_prj_editor
         //     Debug.Log("InitializeOnEnterPlayMode: " + options);
         // }
     }
-
-    public class PreBuild
-    {
-        public static void SetupBooter()
-        {
-            Debug.Log("SetupBooter Begin");
-            EditorSceneManager.OpenScene("Assets/Default.unity");
-
-            var go = GameObject.Find("Main Camera");
-            if (null != go)
-            {
-                Booter booter = null;
-                if (!go.TryGetComponent<Booter>(out booter))
-                {
-                    go.AddComponent<Booter>();
-                }
-            }
-
-            EditorSceneManager.SaveOpenScenes();
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-            Debug.Log("SetupBooter End");
-        }
-    }
 }

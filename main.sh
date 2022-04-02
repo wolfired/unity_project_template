@@ -245,10 +245,6 @@ function u3d_prj_build() {
     rm -rf $u3d_out_path
     mkdir -p $u3d_out_path
 
-    # UnityExecuteMethod \
-    # $u3d_prj_path/$u3d_prj_name \
-    # com.wolfired.dot_prj_editor.PreBuild.SetupBooter
-
     UnityExecuteMethod $u3d_prj_path/$u3d_prj_name $u3d_prj_builder_script --builder_args_outfile $u3d_out_file
 }
 
