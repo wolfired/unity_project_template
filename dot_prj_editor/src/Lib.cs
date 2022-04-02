@@ -43,22 +43,21 @@ namespace com.wolfired.dot_prj_editor
     {
         public static void SetupBooter()
         {
-            // EditorSceneManager.OpenScene("Assets/Default.unity");
+            EditorSceneManager.OpenScene("Assets/Default.unity");
 
-            // var go = GameObject.Find("Main Camera");
-            // if (null != go)
-            // {
-            //     Booter booter = null;
-            //     if (!go.TryGetComponent<Booter>(out booter))
-            //     {
-            //         go.AddComponent<Booter>();
-            //     }
-            // }
+            var go = GameObject.Find("Main Camera");
+            if (null != go)
+            {
+                Booter booter = null;
+                if (!go.TryGetComponent<Booter>(out booter))
+                {
+                    go.AddComponent<Booter>();
+                }
+            }
 
-            // EditorSceneManager.SaveOpenScenes();
-            // AssetDatabase.SaveAssets();
-            // AssetDatabase.Refresh();
-            Debug.Log("SetupBooter");
+            EditorSceneManager.SaveOpenScenes();
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
     }
 }
