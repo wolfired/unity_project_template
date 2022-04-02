@@ -278,6 +278,9 @@ time java -jar jenkins-cli.jar -s http://192.168.180.25:58080/ -webSocket -auth 
 && cat tmp_apk.log | curl $(grep -oP '(?<=Download:\s)https://.+?\.apk$') -sO \
 && adb install `ls tmp_*.apk | sort -r | head -n 1`
 
+time java -jar jenkins-cli.jar -s http://192.168.180.25:58080/ -webSocket -auth admin:admin build tmp_testbed -w -s -v \
+| tee tmp_testbed.log
+
 ```
 
 # 引用

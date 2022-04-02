@@ -2,6 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 using com.wolfired.dot_prj_core;
+using UnityEditor.SceneManagement;
 
 namespace com.wolfired.dot_prj_editor
 {
@@ -19,30 +20,32 @@ namespace com.wolfired.dot_prj_editor
 
             Debug.Log("InitializeOnLoad");
 
+            var go = GameObject.Find("Main Camera");
+            if (null != go)
+            {
+                Booter booter = null;
+                if (!go.TryGetComponent<Booter>(out booter))
+                {
+                    go.AddComponent<Booter>();
+
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+                }
+            }
+
             AssemblyReloadEvents.afterAssemblyReload += () =>
             {
                 Debug.Log("AssemblyReloadEvents.afterAssemblyReload");
 
-                var go = GameObject.Find("Main Camera");
-                if (null != go)
-                {
-                    Booter booter = null;
-                    if (!go.TryGetComponent<Booter>(out booter))
-                    {
-                        go.AddComponent<Booter>();
-
-                        AssetDatabase.SaveAssets();
-                        AssetDatabase.Refresh();
-                    }
-                }
+                EditorSceneManager.OpenScene("Assets/Default");
             };
         }
 
-        // [InitializeOnLoadMethod]
-        // public static void InitializeOnLoadMethod()
-        // {
-        //     Debug.Log("InitializeOnLoadMethod");
-        // }
+        [InitializeOnLoadMethod]
+        public static void InitializeOnLoadMethod()
+        {
+            Debug.Log("InitializeOnLoadMethod");
+        }
 
         // [InitializeOnEnterPlayMode]
         // public static void InitializeOnEnterPlayMode(EnterPlayModeOptions options)

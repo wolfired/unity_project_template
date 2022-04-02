@@ -244,6 +244,15 @@ function dot_prj_build() {
 function u3d_prj_build() {
     rm -rf $u3d_out_path
     mkdir -p $u3d_out_path
+
+cat <<EOF > $u3d_prj_path/$u3d_prj_name/Library/LastSceneManagerSetup.txt
+sceneSetups:
+- path: Assets/Default.unity
+  isLoaded: 1
+  isActive: 1
+  isSubScene: 0
+EOF
+
     UnityExecuteMethod $u3d_prj_path/$u3d_prj_name $u3d_prj_builder_script --builder_args_outfile $u3d_out_file
 }
 
