@@ -23,27 +23,6 @@ namespace com.wolfired.dot_prj_editor
             AssemblyReloadEvents.afterAssemblyReload += () =>
             {
                 Debug.Log("AssemblyReloadEvents.afterAssemblyReloadd");
-
-                // var ss = new[] { new SceneSetup() };
-                // ss[0].isLoaded = true;
-                // ss[0].isActive = true;
-                // ss[0].isSubScene = false;
-                // ss[0].path = "Assets/Default.unity";
-                // EditorSceneManager.RestoreSceneManagerSetup(ss);
-
-                var go = GameObject.Find("Main Camera");
-                if (null != go)
-                {
-                    Booter booter = null;
-                    if (!go.TryGetComponent<Booter>(out booter))
-                    {
-                        go.AddComponent<Booter>();
-
-                        EditorSceneManager.SaveOpenScenes();
-                        AssetDatabase.SaveAssets();
-                        AssetDatabase.Refresh();
-                    }
-                }
             };
         }
 
@@ -58,5 +37,27 @@ namespace com.wolfired.dot_prj_editor
         // {
         //     Debug.Log("InitializeOnEnterPlayMode: " + options);
         // }
+    }
+
+    public class PreBuild
+    {
+        public static void SetupBooter()
+        {
+            EditorSceneManager.OpenScene("Assets/Default.unity");
+
+            var go = GameObject.Find("Main Camera");
+            if (null != go)
+            {
+                Booter booter = null;
+                if (!go.TryGetComponent<Booter>(out booter))
+                {
+                    go.AddComponent<Booter>();
+                }
+            }
+
+            EditorSceneManager.SaveOpenScenes();
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
     }
 }
