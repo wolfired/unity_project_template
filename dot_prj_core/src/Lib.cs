@@ -9,6 +9,7 @@ namespace com.wolfired.dot_prj_core
     {
         public void OnEnable()
         {
+            Debug.Log("Booter");
         }
 
         public void Update()
