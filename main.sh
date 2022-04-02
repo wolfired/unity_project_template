@@ -61,8 +61,8 @@ cache_server_enable_download=${server_endpoint:+"-cacheServerEnableDownload $ser
 server_enable_upload=${server_enable_upload:-true}
 cache_server_enable_upload=${server_endpoint:+"-cacheServerEnableUpload $server_enable_upload"}
 
-# -noUpm -quit -disable-gpu-skinning -job-worker-count 8
-unity_cmd_args="$adb2_enable $cache_server_enable $cache_server_endpoint $cache_server_namespace_prefix $cache_server_enable_download $cache_server_enable_upload -logFile $unity_log_file $u3d_build_target -batchmode"
+# -noUpm -quit -disable-gpu-skinning -nographics -job-worker-count 8
+unity_cmd_args="$adb2_enable $cache_server_enable $cache_server_endpoint $cache_server_namespace_prefix $cache_server_enable_download $cache_server_enable_upload -logFile $unity_log_file $u3d_build_target -batchmode -nographics"
 unity_cmd="$unity_exe_file $unity_cmd_args"
 
 function args_print() {
