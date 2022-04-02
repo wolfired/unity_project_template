@@ -43,6 +43,7 @@ namespace com.wolfired.dot_prj_editor
     {
         public static void SetupBooter()
         {
+            Debug.Log("SetupBooter Begin");
             EditorSceneManager.OpenScene("Assets/Default.unity");
 
             var go = GameObject.Find("Main Camera");
@@ -58,6 +59,7 @@ namespace com.wolfired.dot_prj_editor
             EditorSceneManager.SaveOpenScenes();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+            Debug.Log("SetupBooter End");
         }
     }
 }
