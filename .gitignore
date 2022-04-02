@@ -13,6 +13,7 @@
 !/u3d_prj/**/Plugins/.gitkeep
 /u3d_prj/Library/
 /u3d_prj/Logs/
+/u3d_prj/obj/
 /u3d_prj/Temp/
 /u3d_prj/*.csproj
 /u3d_prj/*.sln
