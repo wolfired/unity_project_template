@@ -1,6 +1,31 @@
 unity_project_template
 ======================
 
+这是一个Unity项目模板
+
+# 外部工具
+
+```bash
+
+dotnet tool install -g wolfired.u3dot_converter
+
+```
+
+# 环境变量
+
+```bash
+
+JAVA_HOME=
+
+ANDROID_SDK_ROOT=
+
+ANDROID_NDK_ROOT= # or
+ANDROID_NDK_HOME=
+
+VSCODE_CMD=/path/to/the/vscode/exe # 用于生成Unity项目文件, 必填
+
+```
+
 # 参数
 
 ```bash
@@ -30,23 +55,6 @@ step_build_dotnet_prj=0 # 构建全部Dotnet项目
 step_create_default_scene=0 # 创建默认场景, 首次调用后根据实际情况选择调用
 step_build_unity_prj=0 # 构建Unity项目
 step_upload=0 # 上传资源, 主要用于自动化构建环境, 本地开发一般无需调用
-
-```
-
-这是一个Unity项目模板
-
-# 环境变量
-
-```bash
-
-JAVA_HOME=
-
-ANDROID_SDK_ROOT=
-
-ANDROID_NDK_ROOT= # or
-ANDROID_NDK_HOME=
-
-VSCODE_CMD= # 用于生成Unity项目文件, 必填
 
 ```
 
@@ -197,7 +205,9 @@ bash ./main.sh
 
 ```
 
-# Docker
+# 使用Docker进行自动化构建
+
+如果使用下面的Docker镜像可省略`step_env_prepare`, `step_activate_unity`
 
 `docker-compose.yml`
 
