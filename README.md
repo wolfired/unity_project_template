@@ -5,6 +5,7 @@ unity_project_template
 
 ```bash
 
+unity_exe_file=/path/to/the/unity/exe # Unity程序路径
 dot_prj_name_core=dot_prj_core # 通用核心模块名
 dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 # 业务子模块名, 列表, 逗号分隔
 dot_prj_name_editor=dot_prj_editor # 编辑器模块名
@@ -13,7 +14,7 @@ u3d_prj_name=u3d_prj # Unity项目名
 u3d_build_target=Android # Unity目标平台
 u3d_out_file_name=${u3d_prj_name}_${timestamp}.apk # Unity构建输出文件名
 u3d_prj_builder_script=com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build # Unity构建脚本
-server_endpoint= # Unity加速功能相关 
+server_endpoint= # Unity加速功能相关
 server_namespace_prefix= # Unity加速功能相关
 server_enable_download=true # Unity加速功能相关
 server_enable_upload=true # Unity加速功能相关
