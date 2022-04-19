@@ -1,11 +1,55 @@
 unity_project_template
 ======================
 
+# 参数
+
+```bash
+
+dot_prj_name_core=dot_prj_core # 通用核心模块名
+dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 # 业务子模块名, 列表, 逗号分隔
+dot_prj_name_editor=dot_prj_editor # 编辑器模块名
+unity_log_file= # /path/to/the/log/file
+u3d_prj_name=u3d_prj # Unity项目名
+u3d_build_target=Android # Unity目标平台
+u3d_out_file_name=${u3d_prj_name}_${timestamp}.apk # Unity构建输出文件名
+u3d_prj_builder_script=com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build # Unity构建脚本
+server_endpoint= # Unity加速功能相关 
+server_namespace_prefix= # Unity加速功能相关
+server_enable_download=true # Unity加速功能相关
+server_enable_upload=true # Unity加速功能相关
+refs4player=Mono.Options # Unity Player的外部依赖, 标准的nuget包, 列表, 逗号分隔
+refs4editor= # Unity Editor的外部依赖, 标准的nuget包, 列表, 逗号分隔
+step_env_prepare=0 # 环境设置, 主要用于自动化构建环境, 本地开发一般无需调用
+step_activate_unity=0 # 使用授权文件激活Unity, 主要用于自动化构建环境, 本地开发一般无需调用
+step_create_unity_prj=0 # 创建Unity项目, 首次调用后根据实际情况选择调用
+step_dotnet_refs=0 # 生成外部依赖整合项目, 首次调用后有增删外部依赖时调用
+step_install_unity_package=0 # 安装Unity插件并生成Unity项目文件, 首次调用后根据实际情况选择调用, 目前脚本内部只安装VScode插件用于生成Unity项目文件
+step_create_dotnet_prj=0 # 创建全部Dotnet项目, 首次调用后根据实际情况选择调用
+step_build_dotnet_prj=0 # 构建全部Dotnet项目
+step_create_default_scene=0 # 创建默认场景, 首次调用后根据实际情况选择调用
+step_build_unity_prj=0 # 构建Unity项目
+step_upload=0 # 上传资源, 主要用于自动化构建环境, 本地开发一般无需调用
+
+```
+
 这是一个Unity项目模板
 
-# 用法
+# 环境变量
 
-* 编辑`main.sh`
+```bash
+
+JAVA_HOME=
+
+ANDROID_SDK_ROOT=
+
+ANDROID_NDK_ROOT= # or
+ANDROID_NDK_HOME=
+
+VSCODE_CMD= # 用于生成Unity项目文件, 必填
+
+```
+
+# 模板
 
 ```bash
 
@@ -20,7 +64,7 @@ u3d_prj_name=u3d_prj \
 u3d_build_target=Win64 \
 u3d_out_file_name=${u3d_prj_name}_${timestamp}.exe \
 u3d_prj_builder_script=com.wolfired.dot_prj_stage1.DefaultWindowsBuilder.Build \
-server_endpoint=192.168.180.25:10080 \
+server_endpoint= \
 server_namespace_prefix= \
 server_enable_download=true \
 server_enable_upload=true \
@@ -47,7 +91,7 @@ u3d_prj_name=u3d_prj \
 u3d_build_target=Android \
 u3d_out_file_name=${u3d_prj_name}_${timestamp}.apk \
 u3d_prj_builder_script=com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build \
-server_endpoint=192.168.180.25:10080 \
+server_endpoint= \
 server_namespace_prefix= \
 server_enable_download=true \
 server_enable_upload=true \
@@ -74,7 +118,7 @@ u3d_prj_name=u3d_prj \
 u3d_build_target=Win64 \
 u3d_out_file_name=${u3d_prj_name}_${timestamp}.apk \
 u3d_prj_builder_script=com.wolfired.dot_prj_stage1.Testbed.Test \
-server_endpoint=192.168.180.25:10080 \
+server_endpoint= \
 server_namespace_prefix= \
 server_enable_download=true \
 server_enable_upload=true \
@@ -101,7 +145,7 @@ u3d_prj_name=u3d_prj \
 u3d_build_target=Android \
 u3d_out_file_name=${u3d_prj_name}_${timestamp}.apk \
 u3d_prj_builder_script=com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build \
-server_endpoint=192.168.180.25:10080 \
+server_endpoint= \
 server_namespace_prefix= \
 server_enable_download=true \
 server_enable_upload=true \
@@ -128,7 +172,7 @@ u3d_prj_name=u3d_prj \
 u3d_build_target=Android \
 u3d_out_file_name=${u3d_prj_name}_${timestamp}.apk \
 u3d_prj_builder_script=com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build \
-server_endpoint=192.168.180.25:10080 \
+server_endpoint= \
 server_namespace_prefix= \
 server_enable_download=true \
 server_enable_upload=true \
@@ -151,11 +195,6 @@ step_clean_clear=1 \
 bash ./main.sh
 
 ```
-
-# 注意
-
-1. `main.sh` -> `env_prepare()` 要用到代理
-2. 如果使用下面的Docker容器配置, `step_env_prepare=0`, `step_activate_unity=0`
 
 # Docker
 

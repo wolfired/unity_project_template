@@ -1,0 +1,5 @@
+<linker>
+	<assembly fullname="netstandard" preserve="all" />
+	<assembly fullname="UnityEngine" preserve="all" />
+	<assembly fullname="UnityEngine.CoreModule" preserve="all" />
+</linker>

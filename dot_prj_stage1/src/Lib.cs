@@ -17,6 +17,8 @@ namespace com.wolfired.dot_prj_stage1
     {
         public static void GenU3DProjectFiles()
         {
+            UnityEditorHelper.SetupVSCode();
+
             CodeEditor.CurrentEditor.SyncAll();
 
             U3DEditorUtils.Exit(0);
@@ -112,10 +114,8 @@ namespace com.wolfired.dot_prj_stage1
             Debug.Log(prefs_key_AndroidSdkRoot + " = " + prefs_val_AndroidSdkRoot);
         }
 
-        public static void SetupVSCode()
+        internal static void SetupVSCode()
         {
-            var exit_code = 0;
-
             var prefs_key_vscode_cmd = "kScriptsDefaultApp";
             var prefs_val_vscode_cmd = "";
             if (EditorPrefs.HasKey(prefs_key_vscode_cmd))
@@ -129,7 +129,6 @@ namespace com.wolfired.dot_prj_stage1
                 if (null == prefs_val_vscode_cmd || "" == prefs_val_vscode_cmd || !File.Exists(prefs_val_vscode_cmd))
                 {
                     Debug.Log("You Need Setup Env Var: " + env_key_vscode_cmd);
-                    exit_code = 1;
                 }
                 else
                 {
@@ -151,8 +150,6 @@ namespace com.wolfired.dot_prj_stage1
                 EditorPrefs.SetString(prefs_key_vscode_args, prefs_val_vscode_args);
             }
             Debug.Log(prefs_key_vscode_args + " = " + prefs_val_vscode_args);
-
-            U3DEditorUtils.Exit(exit_code);
         }
 
         public static void CreateDefaultScene()
@@ -213,13 +210,16 @@ namespace com.wolfired.dot_prj_stage1
             PlayerSettings.defaultScreenWidth = 1024;
             PlayerSettings.defaultScreenHeight = 768;
 
+            PlayerSettings.SetScriptingBackend(BuildPipeline.GetBuildTargetGroup(BuildTarget.StandaloneWindows64), ScriptingImplementation.IL2CPP);
+            PlayerSettings.SetApiCompatibilityLevel(BuildPipeline.GetBuildTargetGroup(BuildTarget.StandaloneWindows64), ApiCompatibilityLevel.NET_Standard_2_0);
+
             PlayerSettings.companyName = "wolfired";
             PlayerSettings.productName = "winwin";
 
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
             buildPlayerOptions.scenes = new[] { "Assets/Default.unity" };
             buildPlayerOptions.locationPathName = outfile;
-            buildPlayerOptions.target = BuildTarget.StandaloneWindows;
+            buildPlayerOptions.target = BuildTarget.StandaloneWindows64;
             buildPlayerOptions.options = BuildOptions.None;
 
             BuildPipeline.BuildPlayer(buildPlayerOptions);

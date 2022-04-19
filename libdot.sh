@@ -167,24 +167,24 @@ function DotProjectClean() {
 }
 
 function DotBuild() {
-    local path_sln=${1:?'need dotnet sln path'}
-    local name_sln=${2:?'need dotnet sln name'}
-    local path_sln_out_path=${3:-} # dotnet sln out path
+    local path_sln_or_prj=${1:?'need dotnet sln/prj path'}
+    local name_sln_or_prj=${2:?'need dotnet sln/prj name'}
+    local path_out=${3:-} # dotnet project out path
 
-    if [[ -n $path_sln_out_path && ! -d $path_sln_out_path ]]; then
-        mkdir -p $path_sln_out_path
+    if [[ -n $path_out && ! -d $path_out ]]; then
+        mkdir -p $path_out
     fi
 
-    if [[ -d $path_sln && -d $path_sln_out_path ]]; then
-        printf '%48s: %s\n' 'building dotnet sln' $path_sln/$name_sln.sln
-        dotnet build -o $path_sln_out_path $path_sln/$name_sln.sln
-        printf '%48s: %s\n' 'built dotnet sln' $path_sln/$name_sln.sln
-    elif [[ -d $path_sln ]]; then
-        printf '%48s: %s\n' 'building dotnet sln' $path_sln/$name_sln.sln
-        dotnet build $path_sln/$name_sln.sln
-        printf '%48s: %s\n' 'built dotnet sln' $path_sln/$name_sln.sln
+    if [[ -d $path_sln_or_prj && -d $path_out ]]; then
+        printf '%48s: %s\n' 'building dotnet sln' $path_sln_or_prj/$name_sln_or_prj
+        dotnet build -o $path_out $path_sln_or_prj/$name_sln_or_prj
+        printf '%48s: %s\n' 'built dotnet sln' $path_sln_or_prj/$name_sln_or_prj
+    elif [[ -d $path_sln_or_prj ]]; then
+        printf '%48s: %s\n' 'building dotnet sln' $path_sln_or_prj/$name_sln_or_prj
+        dotnet build $path_sln_or_prj/$name_sln_or_prj
+        printf '%48s: %s\n' 'built dotnet sln' $path_sln_or_prj/$name_sln_or_prj
     else
-        printf '%48s: %s\n' 'nothing to build, dotnet sln not exist' $path_sln/$name_sln.sln
+        printf '%48s: %s\n' 'nothing to build, dotnet sln not exist' $path_sln_or_prj/$name_sln_or_prj
     fi
 }
 

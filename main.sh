@@ -231,14 +231,17 @@ function dot_prj_create() {
 }
 
 function dot_prj_build() {
-    DotBuild $dot_sln_path $dot_sln_name $dot_out_path
+    DotBuild $dot_sln_path $dot_sln_name.sln $dot_out_path
 
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_core true
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_mods true
-    DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_editor true
+
+    DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/StreamingAssets $dot_prj_name_core true
+    DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/StreamingAssets $dot_prj_name_mods true
 
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage0 true
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage1 true
+    DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_editor true
 }
 
 function u3d_prj_build() {
@@ -262,11 +265,15 @@ if (( 0 != $step_clean_clear )); then
     rm -rf $dot_out_path
 
     rm -rf $u3d_prj_path/$u3d_prj_name/.vscode
+    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/*.{dll,dll.meta,pdb,pdb.meta}
+    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/Plugins/*.{dll,dll.meta,pdb,pdb.meta}
     rm -rf $u3d_prj_path/$u3d_prj_name/Library
+    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/StreamingAssets/*.{dll,dll.meta,pdb,pdb.meta}
     rm -rf $u3d_prj_path/$u3d_prj_name/Temp
     rm -rf $u3d_prj_path/$u3d_prj_name/*.csproj
     rm -rf $u3d_prj_path/$u3d_prj_name/*.sln
 
+    rm -rf $dot_prj_path/$dot_prj_name_core/.vscode
     rm -rf $dot_prj_path/$dot_prj_name_core/bin
     rm -rf $dot_prj_path/$dot_prj_name_core/obj
     rm -rf $dot_prj_path/$dot_prj_name_core/*.csproj
@@ -274,27 +281,33 @@ if (( 0 != $step_clean_clear )); then
     readarray -td, arr_dot_prj_name_mod <<<"$dot_prj_name_mods,"
     unset 'arr_dot_prj_name_mod[-1]'
     for dot_prj_name in "${arr_dot_prj_name_mod[@]}"; do
+        rm -rf $dot_prj_path/$dot_prj_name/.vscode
         rm -rf $dot_prj_path/$dot_prj_name/bin
         rm -rf $dot_prj_path/$dot_prj_name/obj
         rm -rf $dot_prj_path/$dot_prj_name/*.csproj
     done
 
+    rm -rf $dot_prj_path/$dot_prj_name_editor/.vscode
     rm -rf $dot_prj_path/$dot_prj_name_editor/bin
     rm -rf $dot_prj_path/$dot_prj_name_editor/obj
     rm -rf $dot_prj_path/$dot_prj_name_editor/*.csproj
 
+    rm -rf $dot_prj_path/$dot_prj_name_stage0/.vscode
     rm -rf $dot_prj_path/$dot_prj_name_stage0/bin
     rm -rf $dot_prj_path/$dot_prj_name_stage0/obj
     rm -rf $dot_prj_path/$dot_prj_name_stage0/*.csproj
 
+    rm -rf $dot_prj_path/$dot_prj_name_stage1/.vscode
     rm -rf $dot_prj_path/$dot_prj_name_stage1/bin
     rm -rf $dot_prj_path/$dot_prj_name_stage1/obj
     rm -rf $dot_prj_path/$dot_prj_name_stage1/*.csproj
 
+    rm -rf $dot_prj_path/refs4player/.vscode
     rm -rf $dot_prj_path/refs4player/bin
     rm -rf $dot_prj_path/refs4player/obj
     rm -rf $dot_prj_path/refs4player/*.csproj
 
+    rm -rf $dot_prj_path/refs4editor/.vscode
     rm -rf $dot_prj_path/refs4editor/bin
     rm -rf $dot_prj_path/refs4editor/obj
     rm -rf $dot_prj_path/refs4editor/*.csproj
@@ -320,6 +333,7 @@ if (( 0 != $step_dotnet_refs )); then
     DotSolutionNew $dot_sln_path $dot_sln_name
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/refs4player
+
     if [[ 0 -eq $? ]]; then
         DotProjectAddPackages $dot_prj_path/refs4player $refs4player
 
@@ -327,7 +341,14 @@ if (( 0 != $step_dotnet_refs )); then
         --cfdst $dot_prj_path/refs4player/refs4player.csproj
     fi
 
+    DotBuild $dot_prj_path/refs4player refs4player.csproj $dot_out_path
+
+    if [[ -n $refs4player && ! -z $refs4player ]]; then
+        DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $refs4player false
+    fi
+
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/refs4editor
+
     if [[ 0 -eq $? ]]; then
         DotProjectAddReference $dot_prj_path/refs4editor $dot_prj_path/refs4player
 
@@ -337,11 +358,7 @@ if (( 0 != $step_dotnet_refs )); then
         --cfdst $dot_prj_path/refs4editor/refs4editor.csproj
     fi
 
-    DotBuild $dot_sln_path $dot_sln_name $dot_out_path
-
-    if [[ -n $refs4player && ! -z $refs4player ]]; then
-        DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $refs4player false
-    fi
+    DotBuild $dot_prj_path/refs4editor refs4editor.csproj $dot_out_path
 
     if [[ -n $refs4editor && ! -z $refs4editor ]]; then
         DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $refs4editor false
@@ -349,10 +366,12 @@ if (( 0 != $step_dotnet_refs )); then
 fi
 
 if (( 0 != $step_install_unity_package )); then
-    if [[ ! -f $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_stage0.dll ]]; then
+    if [[ ! -f $dot_prj_path/$dot_prj_name_stage0/$dot_prj_name_stage0.csproj ]]; then
         mkdir -p $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage0
         cp -v -u $dot_prj_path/$dot_prj_name_stage0/src/*.cs $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage0
     else
+        DotBuild $dot_prj_path/$dot_prj_name_stage0 $dot_prj_name_stage0.csproj $dot_out_path
+        DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage0 true
         u3d_amend_dlls
     fi
 
@@ -360,16 +379,14 @@ if (( 0 != $step_install_unity_package )); then
     $u3d_prj_path/$u3d_prj_name \
     com.wolfired.dot_prj_stage0.U3DPackageUtils.Install --uph_i_args_package_id com.unity.ide.vscode
 
-    if [[ ! -f $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_stage1.dll ]]; then
+    if [[ ! -f $dot_prj_path/$dot_prj_name_stage1/$dot_prj_name_stage1.csproj ]]; then
         mkdir -p $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage1
         cp -v -u $dot_prj_path/$dot_prj_name_stage1/src/*.cs $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage1
     else
+        DotBuild $dot_prj_path/$dot_prj_name_stage1 $dot_prj_name_stage1.csproj $dot_out_path
+        DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage1 true
         u3d_amend_dlls
     fi
-
-    UnityExecuteMethod \
-    $u3d_prj_path/$u3d_prj_name \
-    com.wolfired.dot_prj_stage1.UnityEditorHelper.SetupVSCode
 
     UnityExecuteMethod \
     $u3d_prj_path/$u3d_prj_name \

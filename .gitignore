@@ -11,6 +11,8 @@
 /u3d_prj/.vscode/
 /u3d_prj/**/Plugins/*
 !/u3d_prj/**/Plugins/.gitkeep
+/u3d_prj/**/StreamingAssets/*
+!/u3d_prj/**/StreamingAssets/.gitkeep
 /u3d_prj/Library/
 /u3d_prj/Logs/
 /u3d_prj/obj/
