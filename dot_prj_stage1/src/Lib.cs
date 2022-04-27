@@ -255,6 +255,45 @@ namespace com.wolfired.dot_prj_stage1
         }
     }
 
+    public class ABBuilder
+    {
+        [MenuItem("Tools/AB")]
+        public static void Build()
+        {
+            var dot_prj_name_core = Environment.GetEnvironmentVariable("DOT_PRJ_NAME_CORE");
+            var dot_prj_name_mods = Environment.GetEnvironmentVariable("DOT_PRJ_NAME_MODS");
+
+            var dll_asset_paths = new List<string>();
+            var dll_bytes_asset_paths = new List<string>();
+            dll_asset_paths.Add("Assets/Plugins/" + dot_prj_name_core + ".dll");
+            dll_bytes_asset_paths.Add("Assets/Plugins/" + dot_prj_name_core + ".dll.bytes");
+
+            foreach (var dot_prj_name_mod in dot_prj_name_mods.Split(','))
+            {
+                dll_asset_paths.Add("Assets/Plugins/" + dot_prj_name_mod + ".dll");
+                dll_bytes_asset_paths.Add("Assets/Plugins/" + dot_prj_name_mod + ".dll.bytes");
+            }
+
+            for (int i = 0; i < dll_asset_paths.Count; i++)
+            {
+                File.Copy(PathUtils.AssetPath2FilesystemPath(dll_asset_paths[i]), PathUtils.AssetPath2FilesystemPath(dll_bytes_asset_paths[i]), true);
+            }
+
+            dll_bytes_asset_paths.Add("Assets/Prefabs/Startup.prefab");
+
+            List<AssetBundleBuild> abbs = new List<AssetBundleBuild>();
+            AssetBundleBuild abb = new AssetBundleBuild
+            {
+                assetBundleName = "common",
+                assetNames = dll_bytes_asset_paths.ToArray(),
+            };
+            abbs.Add(abb);
+            BuildPipeline.BuildAssetBundles(Application.streamingAssetsPath, abbs.ToArray(), BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows64);
+
+            U3DEditorUtils.Exit(0);
+        }
+    }
+
     public class Adjust : IFilterBuildAssemblies, IPostprocessBuildWithReport
     {
         [Serializable]
@@ -288,12 +327,12 @@ namespace com.wolfired.dot_prj_stage1
             var dot_prj_name_core = Environment.GetEnvironmentVariable("DOT_PRJ_NAME_CORE");
             var dot_prj_name_mods = Environment.GetEnvironmentVariable("DOT_PRJ_NAME_MODS");
 
-            var monoDllNames = new List<string>();
-            monoDllNames.Add(dot_prj_name_core + ".dll");
+            var dll_names = new List<string>();
+            dll_names.Add(dot_prj_name_core + ".dll");
 
             foreach (var dot_prj_name_mod in dot_prj_name_mods.Split(','))
             {
-                monoDllNames.Add(dot_prj_name_mod + ".dll");
+                dll_names.Add(dot_prj_name_mod + ".dll");
             }
 
             string[] jsonFiles = Directory.GetFiles(Path.GetDirectoryName(report.summary.outputPath), "ScriptingAssemblies.json", SearchOption.AllDirectories);
@@ -308,7 +347,7 @@ namespace com.wolfired.dot_prj_stage1
             {
                 string content = File.ReadAllText(file);
                 ScriptingAssemblies scriptingAssemblies = JsonUtility.FromJson<ScriptingAssemblies>(content);
-                foreach (string name in monoDllNames)
+                foreach (string name in dll_names)
                 {
                     if (!scriptingAssemblies.names.Contains(name))
                     {

@@ -71,6 +71,7 @@ setp_prepare_stage=1 \
 step_create_dotnet_prj=1 \
 step_build_dotnet_prj=1 \
 step_create_default_scene=0 \
+step_build_unity_ab=1 \
 step_build_unity_prj=1 \
 bash ./main.sh
 
@@ -82,6 +83,7 @@ setp_prepare_stage=1 \
 step_create_dotnet_prj=0 \
 step_build_dotnet_prj=1 \
 step_create_default_scene=0 \
+step_build_unity_ab=1 \
 step_build_unity_prj=1 \
 bash ./main.sh
 
@@ -93,7 +95,8 @@ setp_prepare_stage=0 \
 step_create_dotnet_prj=0 \
 step_build_dotnet_prj=1 \
 step_create_default_scene=0 \
-step_build_unity_prj=1 \
+step_build_unity_ab=1 \
+step_build_unity_prj=0 \
 bash ./main.sh
 
 # Windows build exe

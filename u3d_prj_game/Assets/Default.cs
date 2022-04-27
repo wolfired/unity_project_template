@@ -10,35 +10,24 @@ public class Default : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //  var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        //  foreach (var assembly in assemblies)
-        //  {
-        //      var types = assembly.GetTypes();
-        //      foreach (var type in types)
-        //      {
-        //          if("com.wolfired.dot_prj_core.Booter" == type.FullName)
-        //          {
-        //              this.gameObject.AddComponent(type);
-        //          }
-        //      }
-        //  }
+        var ab_common = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, "common"));
 
-        System.Reflection.Assembly gameAss;
+        System.Reflection.Assembly gameAss_core;
+        System.Reflection.Assembly gameAss_mod0;
+        System.Reflection.Assembly gameAss_mod1;
 #if UNITY_EDITOR
-        gameAss = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => assembly.GetName().Name == "dot_prj_core");
+        gameAss_core = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => assembly.GetName().Name == "dot_prj_core");
+        gameAss_mod0 = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => assembly.GetName().Name == "dot_prj_mod0");
+        gameAss_mod1 = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => assembly.GetName().Name == "dot_prj_mod1");
 #else
-        // {// 此代码在Android等平台下并不能工作，请酌情调整
-        //     string gameDll = Application.streamingAssetsPath + "/Mono.Options.dll";
-        //     gameAss = System.Reflection.Assembly.Load(File.ReadAllBytes(gameDll));
-        // }
-        {// 此代码在Android等平台下并不能工作，请酌情调整
-            string gameDll = Application.streamingAssetsPath + "/dot_prj_core.dll";
-            gameAss = System.Reflection.Assembly.Load(File.ReadAllBytes(gameDll));
-        }
+        // 此代码在Android等平台下并不能工作，请酌情调整
+        gameAss_core = System.Reflection.Assembly.Load(ab_common.LoadAsset<TextAsset>("dot_prj_core.dll.bytes").bytes);
+        gameAss_mod0 = System.Reflection.Assembly.Load(ab_common.LoadAsset<TextAsset>("dot_prj_mod0.dll.bytes").bytes);
+        gameAss_mod1 = System.Reflection.Assembly.Load(ab_common.LoadAsset<TextAsset>("dot_prj_mod1.dll.bytes").bytes);
 #endif
 
-        var types = gameAss.GetTypes();
-        foreach (var type in types)
+        var types_core = gameAss_core.GetTypes();
+        foreach (var type in types_core)
         {
             if ("com.wolfired.dot_prj_core.Booter" == type.FullName)
             {
@@ -46,7 +35,16 @@ public class Default : MonoBehaviour
             }
         }
 
-        var go = GameObject.Instantiate(Resources.Load("Startup") as GameObject);
+        var types_mod0 = gameAss_mod0.GetTypes();
+        foreach (var type in types_mod0)
+        {
+            if ("com.wolfired.dot_prj_mod0.Mod0" == type.FullName)
+            {
+                this.gameObject.AddComponent(type);
+            }
+        }
+
+        var go = GameObject.Instantiate(ab_common.LoadAsset<GameObject>("Startup.prefab"));
         go.name = "Startup";
     }
 

@@ -111,6 +111,7 @@ setp_prepare_stage=${setp_prepare_stage:-0}
 step_create_dotnet_prj=${step_create_dotnet_prj:-0}
 step_build_dotnet_prj=${step_build_dotnet_prj:-0}
 step_create_default_scene=${step_create_default_scene:-0}
+step_build_unity_ab=${step_build_unity_ab:-0}
 step_build_unity_prj=${step_build_unity_prj:-0}
 step_upload=${step_upload:-0}
 step_zipsrc=${step_zipsrc:-0}
@@ -156,8 +157,8 @@ function step_clean_clear() {
 
     rm -rf $u3d_prj_path/$u3d_prj_name/.vscode
     rm -rf $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/*.{dll,dll.meta,pdb,pdb.meta}
-    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/Plugins/*.{dll,dll.meta,pdb,pdb.meta}
-    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/StreamingAssets/*.{dll,dll.meta,pdb,pdb.meta}
+    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/Plugins/*.{raw,raw.meta,dll,dll.meta,pdb,pdb.meta}
+    rm -rf $u3d_prj_path/$u3d_prj_name/Assets/StreamingAssets/*
     rm -rf $u3d_prj_path/$u3d_prj_name/Library
     rm -rf $u3d_prj_path/$u3d_prj_name/Logs
     rm -rf $u3d_prj_path/$u3d_prj_name/Temp
@@ -344,6 +345,8 @@ function setp_prepare_stage() {
     if [[ ! -f $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins/$dot_prj_name_stage0.dll ]]; then
         mkdir -p $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage0
         cp -v -u $dot_prj_path/$dot_prj_name_stage0/src/*.cs $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage0
+
+        rm -rf $u3d_prj_path/$u3d_prj_name/Assets/Editor/Scripts/$dot_prj_name_stage1*
     else
         DotBuild $dot_prj_path/$dot_prj_name_stage0 $dot_prj_name_stage0.csproj $dot_out_path
         DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage0 true
@@ -372,8 +375,6 @@ function setp_prepare_stage() {
 
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_stage0
     if [[ 0 -eq $? ]]; then
-        # DotProjectAddReference $dot_prj_path/$dot_prj_name_stage0 $dot_prj_path/refs4editor
-
         u3dot_converter \
         --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp-Editor.csproj \
         --nssrc 'http://schemas.microsoft.com/developer/msbuild/2003' \
@@ -407,8 +408,6 @@ fi
 function step_create_dotnet_prj() {
     DotProjectNew $dot_sln_path $dot_sln_name classlib "netstandard2.0" $dot_prj_path/$dot_prj_name_core
     if [[ 0 -eq $? ]]; then
-        # DotProjectAddReference $dot_prj_path/$dot_prj_name_core $dot_prj_path/refs4player
-
         u3dot_converter \
         --cfsrc $u3d_prj_path/$u3d_prj_name/Assembly-CSharp.csproj \
         --nssrc 'http://schemas.microsoft.com/developer/msbuild/2003' \
@@ -454,9 +453,6 @@ function step_build_dotnet_prj() {
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_core true
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Plugins $dot_prj_name_mods true
 
-    DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/StreamingAssets $dot_prj_name_core true
-    DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/StreamingAssets $dot_prj_name_mods true
-
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage0 true
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_stage1 true
     DotDLLsSrc2Dst $dot_out_path $u3d_prj_path/$u3d_prj_name/Assets/Editor/Plugins $dot_prj_name_editor true
@@ -474,12 +470,24 @@ if (( 0 != $step_create_default_scene )); then
     step_create_default_scene
 fi
 
+function step_build_unity_ab() {
+    UnityExecuteMethod \
+    $u3d_prj_path/$u3d_prj_name \
+    com.wolfired.dot_prj_stage1.ABBuilder.Build
+}
+if (( 0 != $step_build_unity_ab )); then
+    step_build_unity_ab
+fi
+
 function step_build_unity_prj() {
     rm -rf $u3d_out_path
     mkdir -p $u3d_out_path
 
     u3d_amend_dlls
-    UnityExecuteMethod $u3d_prj_path/$u3d_prj_name $u3d_prj_builder_script --builder_args_outfile $u3d_out_file
+
+    UnityExecuteMethod \
+    $u3d_prj_path/$u3d_prj_name \
+    $u3d_prj_builder_script --builder_args_outfile $u3d_out_file
 }
 if (( 0 != $step_build_unity_prj )); then
     step_build_unity_prj

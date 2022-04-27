@@ -10,7 +10,7 @@ namespace com.wolfired.dot_prj_core
     {
         public void OnEnable()
         {
-            Debug.Log("Booter!");
+            Debug.Log("Booter!Link!");
 
             var Sphere = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             Sphere.transform.position = new Vector3(1, 1, 0);
@@ -27,7 +27,7 @@ namespace com.wolfired.dot_prj_core
     {
         public void OnEnable()
         {
-            Debug.Log("Startup!");
+            Debug.Log("Startup! Link!");
 
             var Sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             Sphere.transform.position = new Vector3(-1, 1, 0);
@@ -37,6 +37,14 @@ namespace com.wolfired.dot_prj_core
         {
             var target = GameObject.Find("TargetStartup");
             target.transform.position += new Vector3(0, -0.01f, 0);
+        }
+    }
+
+    public class Tools
+    {
+        public static int max(int x, int y)
+        {
+            return x > y ? x : y;
         }
     }
 }
