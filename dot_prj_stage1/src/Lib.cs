@@ -1,12 +1,16 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 using Mono.Options;
 
 using UnityEngine;
 using UnityEditor;
-using Unity.CodeEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
+using Unity.CodeEditor;
+
 using com.wolfired.dot_prj_stage0;
 
 namespace com.wolfired.dot_prj_stage1
@@ -248,6 +252,74 @@ namespace com.wolfired.dot_prj_stage1
             Debug.Log(PlayerSettings.productGUID);
 
             U3DEditorUtils.Exit(0);
+        }
+    }
+
+    public class Adjust : IFilterBuildAssemblies, IPostprocessBuildWithReport
+    {
+        [Serializable]
+        public class ScriptingAssemblies
+        {
+            public List<string> names;
+            public List<int> types;
+        }
+
+        public int callbackOrder => 0;
+
+        public string[] OnFilterAssemblies(BuildOptions buildOptions, string[] assemblies)
+        {
+            var dot_prj_prefix = Environment.GetEnvironmentVariable("DOT_PRJ_PREFIX");
+
+            List<string> newNames = new List<string>(assemblies.Length);
+
+            foreach (string assembly in assemblies)
+            {
+                if (!assembly.Contains(dot_prj_prefix))
+                {
+                    newNames.Add(assembly);
+                }
+            }
+
+            return newNames.ToArray();
+        }
+
+        void IPostprocessBuildWithReport.OnPostprocessBuild(BuildReport report)
+        {
+            var dot_prj_name_core = Environment.GetEnvironmentVariable("DOT_PRJ_NAME_CORE");
+            var dot_prj_name_mods = Environment.GetEnvironmentVariable("DOT_PRJ_NAME_MODS");
+
+            var monoDllNames = new List<string>();
+            monoDllNames.Add(dot_prj_name_core + ".dll");
+
+            foreach (var dot_prj_name_mod in dot_prj_name_mods.Split(','))
+            {
+                monoDllNames.Add(dot_prj_name_mod + ".dll");
+            }
+
+            string[] jsonFiles = Directory.GetFiles(Path.GetDirectoryName(report.summary.outputPath), "ScriptingAssemblies.json", SearchOption.AllDirectories);
+
+            if (jsonFiles.Length == 0)
+            {
+                Debug.LogError("can not find file ScriptingAssemblies.json");
+                return;
+            }
+
+            foreach (string file in jsonFiles)
+            {
+                string content = File.ReadAllText(file);
+                ScriptingAssemblies scriptingAssemblies = JsonUtility.FromJson<ScriptingAssemblies>(content);
+                foreach (string name in monoDllNames)
+                {
+                    if (!scriptingAssemblies.names.Contains(name))
+                    {
+                        scriptingAssemblies.names.Add(name);
+                        scriptingAssemblies.types.Add(16); // user dll type
+                    }
+                }
+                content = JsonUtility.ToJson(scriptingAssemblies);
+
+                File.WriteAllText(file, content);
+            }
         }
     }
 }

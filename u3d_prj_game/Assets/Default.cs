@@ -22,14 +22,21 @@ public class Default : MonoBehaviour
         //          }
         //      }
         //  }
+
         System.Reflection.Assembly gameAss;
 #if UNITY_EDITOR
         gameAss = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(assembly => assembly.GetName().Name == "dot_prj_core");
 #else
-        // 此代码在Android等平台下并不能工作，请酌情调整
-        string gameDll = Application.streamingAssetsPath + "/dot_prj_core.dll";
-        gameAss = System.Reflection.Assembly.Load(File.ReadAllBytes(gameDll));
+        // {// 此代码在Android等平台下并不能工作，请酌情调整
+        //     string gameDll = Application.streamingAssetsPath + "/Mono.Options.dll";
+        //     gameAss = System.Reflection.Assembly.Load(File.ReadAllBytes(gameDll));
+        // }
+        {// 此代码在Android等平台下并不能工作，请酌情调整
+            string gameDll = Application.streamingAssetsPath + "/dot_prj_core.dll";
+            gameAss = System.Reflection.Assembly.Load(File.ReadAllBytes(gameDll));
+        }
 #endif
+
         var types = gameAss.GetTypes();
         foreach (var type in types)
         {
@@ -38,6 +45,9 @@ public class Default : MonoBehaviour
                 this.gameObject.AddComponent(type);
             }
         }
+
+        var go = GameObject.Instantiate(Resources.Load("Startup") as GameObject);
+        go.name = "Startup";
     }
 
     // Update is called once per frame

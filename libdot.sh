@@ -176,15 +176,15 @@ function DotBuild() {
     fi
 
     if [[ -d $path_sln_or_prj && -d $path_out ]]; then
-        printf '%48s: %s\n' 'building dotnet sln' $path_sln_or_prj/$name_sln_or_prj
+        printf '%48s: %s\n' 'building dotnet sln/prj' $path_sln_or_prj/$name_sln_or_prj
         dotnet build -o $path_out $path_sln_or_prj/$name_sln_or_prj
-        printf '%48s: %s\n' 'built dotnet sln' $path_sln_or_prj/$name_sln_or_prj
+        printf '%48s: %s\n' 'built dotnet sln/prj' $path_sln_or_prj/$name_sln_or_prj
     elif [[ -d $path_sln_or_prj ]]; then
-        printf '%48s: %s\n' 'building dotnet sln' $path_sln_or_prj/$name_sln_or_prj
+        printf '%48s: %s\n' 'building dotnet sln/prj' $path_sln_or_prj/$name_sln_or_prj
         dotnet build $path_sln_or_prj/$name_sln_or_prj
-        printf '%48s: %s\n' 'built dotnet sln' $path_sln_or_prj/$name_sln_or_prj
+        printf '%48s: %s\n' 'built dotnet sln/prj' $path_sln_or_prj/$name_sln_or_prj
     else
-        printf '%48s: %s\n' 'nothing to build, dotnet sln not exist' $path_sln_or_prj/$name_sln_or_prj
+        printf '%48s: %s\n' 'nothing to build, dotnet sln/prj not exist' $path_sln_or_prj/$name_sln_or_prj
     fi
 }
 

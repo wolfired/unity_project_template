@@ -12,6 +12,11 @@ namespace com.wolfired.dot_prj_stage0
                 EditorApplication.Exit(exit_code);
             }
         }
+
+        public static void RefreshAssets()
+        {
+            U3DEditorUtils.Exit();
+        }
     }
 
     public sealed class U3DEditorPrefsUtils
@@ -20,6 +25,5 @@ namespace com.wolfired.dot_prj_stage0
 
     public sealed class U3DPlayerPrefsUtils
     {
-
     }
 }

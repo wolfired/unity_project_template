@@ -31,9 +31,9 @@ VSCODE_CMD=/path/to/the/vscode/exe # 用于生成Unity项目文件, 必填
 ```bash
 
 unity_exe_file=/path/to/the/unity/exe # Unity程序路径
-dot_prj_name_core=dot_prj_core # 通用核心模块名
-dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 # 业务子模块名, 列表, 逗号分隔
-dot_prj_name_editor=dot_prj_editor # 编辑器模块名
+dot_prj_name_core=core # 通用核心模块名
+dot_prj_name_mods=mod0,mod1 # 业务子模块名, 列表, 逗号分隔
+dot_prj_name_editor=editor # 编辑器模块名
 unity_log_file= # /path/to/the/log/file
 u3d_prj_name=u3d_prj # Unity项目名
 u3d_build_target=Android # Unity目标平台
@@ -43,24 +43,58 @@ server_endpoint= # Unity加速功能相关
 server_namespace_prefix= # Unity加速功能相关
 server_enable_download=true # Unity加速功能相关
 server_enable_upload=true # Unity加速功能相关
-refs4player=Mono.Options # Unity Player的外部依赖, 标准的nuget包, 列表, 逗号分隔
+refs4player=Mono.Options # Unity Player的外部依赖, 标准的nuget包, 列表, 逗号分隔, 需要添加到linx.xml
 refs4editor= # Unity Editor的外部依赖, 标准的nuget包, 列表, 逗号分隔
+step_clean_clear=0 # 删除全部构建过程中生成的文件
+step_clean_clear_all=0 # 删除全部构建过程中生成的文件(包括工程文件)
 step_env_prepare=0 # 环境设置, 主要用于自动化构建环境, 本地开发一般无需调用
 step_activate_unity=0 # 使用授权文件激活Unity, 主要用于自动化构建环境, 本地开发一般无需调用
 step_create_unity_prj=0 # 创建Unity项目, 首次调用后根据实际情况选择调用
 step_dotnet_refs=0 # 生成外部依赖整合项目, 首次调用后有增删外部依赖时调用
-step_install_unity_package=0 # 安装Unity插件并生成Unity项目文件, 首次调用后根据实际情况选择调用, 目前脚本内部只安装VScode插件用于生成Unity项目文件
+setp_prepare_stage=0 # 生成Unity项目文件, 首次调用后根据实际情况选择调用, 目前脚本安装VScode插件用于生成Unity项目文件
 step_create_dotnet_prj=0 # 创建全部Dotnet项目, 首次调用后根据实际情况选择调用
 step_build_dotnet_prj=0 # 构建全部Dotnet项目
 step_create_default_scene=0 # 创建默认场景, 首次调用后根据实际情况选择调用
 step_build_unity_prj=0 # 构建Unity项目
 step_upload=0 # 上传资源, 主要用于自动化构建环境, 本地开发一般无需调用
-
+step_zipsrc=0 # 打包本文件夹
 ```
 
 # 模板
 
 ```bash
+# 通过git clone工程, 首次构建
+unity_exe_file=/d/Unity.2020.3.33f1/Editor/Unity.exe \
+step_create_unity_prj=0 \
+step_dotnet_refs=1 \
+setp_prepare_stage=1 \
+step_create_dotnet_prj=1 \
+step_build_dotnet_prj=1 \
+step_create_default_scene=0 \
+step_build_unity_prj=1 \
+bash ./main.sh
+
+# 通过zip包获得工程, 首次构建
+unity_exe_file=/d/Unity.2020.3.33f1/Editor/Unity.exe \
+step_create_unity_prj=0 \
+step_dotnet_refs=1 \
+setp_prepare_stage=1 \
+step_create_dotnet_prj=0 \
+step_build_dotnet_prj=1 \
+step_create_default_scene=0 \
+step_build_unity_prj=1 \
+bash ./main.sh
+
+# 后续业务开发
+unity_exe_file=/d/Unity.2020.3.33f1/Editor/Unity.exe \
+step_create_unity_prj=0 \
+step_dotnet_refs=0 \
+setp_prepare_stage=0 \
+step_create_dotnet_prj=0 \
+step_build_dotnet_prj=1 \
+step_create_default_scene=0 \
+step_build_unity_prj=1 \
+bash ./main.sh
 
 # Windows build exe
 timestamp=`date +%Y%m%d_%H%M%S` \
@@ -81,7 +115,7 @@ step_env_prepare=0 \
 step_activate_unity=0 \
 step_create_unity_prj=0 \
 step_dotnet_refs=0 \
-step_install_unity_package=0 \
+setp_prepare_stage=0 \
 step_create_dotnet_prj=0 \
 step_build_dotnet_prj=0 \
 step_create_default_scene=0 \
@@ -108,7 +142,7 @@ step_env_prepare=0 \
 step_activate_unity=0 \
 step_create_unity_prj=0 \
 step_dotnet_refs=0 \
-step_install_unity_package=0 \
+setp_prepare_stage=0 \
 step_create_dotnet_prj=0 \
 step_build_dotnet_prj=0 \
 step_create_default_scene=0 \
@@ -135,7 +169,7 @@ step_env_prepare=0 \
 step_activate_unity=0 \
 step_create_unity_prj=0 \
 step_dotnet_refs=0 \
-step_install_unity_package=0 \
+setp_prepare_stage=0 \
 step_create_dotnet_prj=0 \
 step_build_dotnet_prj=0 \
 step_create_default_scene=0 \
@@ -162,7 +196,7 @@ step_env_prepare=0 \
 step_activate_unity=0 \
 step_create_unity_prj=0 \
 step_dotnet_refs=0 \
-step_install_unity_package=0 \
+setp_prepare_stage=0 \
 step_create_dotnet_prj=0 \
 step_build_dotnet_prj=0 \
 step_create_default_scene=0 \
@@ -189,18 +223,12 @@ step_env_prepare=0 \
 step_activate_unity=0 \
 step_create_unity_prj=0 \
 step_dotnet_refs=0 \
-step_install_unity_package=0 \
+setp_prepare_stage=0 \
 step_create_dotnet_prj=0 \
 step_build_dotnet_prj=0 \
 step_create_default_scene=0 \
 step_build_unity_prj=0 \
 step_upload=0 \
-bash ./main.sh
-
-dot_prj_name_core=dot_prj_core \
-dot_prj_name_mods=dot_prj_mod0,dot_prj_mod1 \
-dot_prj_name_editor=dot_prj_editor \
-step_clean_clear=1 \
 bash ./main.sh
 
 ```
