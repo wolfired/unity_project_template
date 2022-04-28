@@ -36,8 +36,8 @@ dot_prj_name_mods=mod0,mod1 # 业务子模块名, 列表, 逗号分隔
 dot_prj_name_editor=editor # 编辑器模块名
 unity_log_file= # /path/to/the/log/file
 u3d_prj_name=u3d_prj # Unity项目名
-u3d_build_target=Android # Unity目标平台
-u3d_out_file_name=${u3d_prj_name}_${timestamp}.apk # Unity构建输出文件名
+u3d_build_target= # Unity目标平台, Win64, Android
+u3d_out_file_name= # Unity构建输出文件名
 u3d_prj_builder_script=com.wolfired.dot_prj_stage1.DefaultAndroidBuilder.Build # Unity构建脚本
 server_endpoint= # Unity加速功能相关
 server_namespace_prefix= # Unity加速功能相关
@@ -46,7 +46,7 @@ server_enable_upload=true # Unity加速功能相关
 refs4player=Mono.Options # Unity Player的外部依赖, 标准的nuget包, 列表, 逗号分隔, 需要添加到linx.xml
 refs4editor= # Unity Editor的外部依赖, 标准的nuget包, 列表, 逗号分隔
 step_clean_clear=0 # 删除全部构建过程中生成的文件
-step_clean_clear_all=0 # 删除全部构建过程中生成的文件(包括工程文件)
+step_clean_clear_all=0 # 删除全部构建过程中生成的文件和工程文件
 step_env_prepare=0 # 环境设置, 主要用于自动化构建环境, 本地开发一般无需调用
 step_activate_unity=0 # 使用授权文件激活Unity, 主要用于自动化构建环境, 本地开发一般无需调用
 step_create_unity_prj=0 # 创建Unity项目, 首次调用后根据实际情况选择调用
@@ -57,7 +57,7 @@ step_build_dotnet_prj=0 # 构建全部Dotnet项目
 step_create_default_scene=0 # 创建默认场景, 首次调用后根据实际情况选择调用
 step_build_unity_prj=0 # 构建Unity项目
 step_upload=0 # 上传资源, 主要用于自动化构建环境, 本地开发一般无需调用
-step_zipsrc=0 # 打包本文件夹
+step_zipprj=0 # 打包本文件夹
 ```
 
 # 模板

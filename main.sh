@@ -114,7 +114,7 @@ step_create_default_scene=${step_create_default_scene:-0}
 step_build_unity_ab=${step_build_unity_ab:-0}
 step_build_unity_prj=${step_build_unity_prj:-0}
 step_upload=${step_upload:-0}
-step_zipsrc=${step_zipsrc:-0}
+step_zipprj=${step_zipprj:-0}
 
 function u3d_amend_dlls() {
     UnityExecuteMethod \
@@ -511,7 +511,7 @@ if (( 0 != $step_upload )); then
     step_upload
 fi
 
-function step_zipsrc() {
+function step_zipprj() {
     step_clean_clear 0
 
     local name=`basename $root_path`
@@ -522,6 +522,6 @@ function step_zipsrc() {
         echo "you need 7z to zip the $u3d_out_path"
     fi
 }
-if (( 0 != $step_zipsrc )); then
-    step_zipsrc
+if (( 0 != $step_zipprj )); then
+    step_zipprj
 fi
