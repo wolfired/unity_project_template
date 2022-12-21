@@ -5,6 +5,7 @@
 # https://forum.unity.com/threads/unity-on-linux-release-notes-and-known-issues.350256/
 # https://forum.unity.com/threads/bug-sln-cproj-files-no-longer-generated-on-linux-in-2018.532830/
 # https://unity3d.com/get-unity/download/archive
+# https://public-cdn.cloud.unity3d.com/hub/prod/releases-linux.json
 
 FROM ubuntu:20.04
 
